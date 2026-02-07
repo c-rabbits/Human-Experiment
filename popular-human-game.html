@@ -508,7 +508,7 @@
 
         .result-hero {
             background: #fff;
-            padding: 20px;
+            padding: 0 20px 30px;
             text-align: center;
             color: #000;
             position: relative;
@@ -516,8 +516,8 @@
         }
 
         .result-banner {
-            width: calc(100% - 40px);
-            margin: 0 auto 20px;
+            width: 100%;
+            margin: 0 0 20px;
             border-radius: 16px;
             overflow: hidden;
             position: relative;
@@ -1160,7 +1160,7 @@
                                     <div class="status-dot"></div>
                                     참여 가능
                                 </div>
-                                <div class="scenario-countdown" id="weddingCountdown">02:40:00</div>
+                                <div class="scenario-countdown" id="weddingCountdown">02:50:00</div>
                             </div>
                             <div class="scenario-content">
                                 <div class="scenario-info">
@@ -1193,7 +1193,7 @@
                                     <div class="status-dot"></div>
                                     참여 가능
                                 </div>
-                                <div class="scenario-countdown" id="blindDateCountdown">02:40:00</div>
+                                <div class="scenario-countdown" id="blindDateCountdown">02:50:00</div>
                             </div>
                             <div class="scenario-content">
                                 <div class="scenario-info">
@@ -1226,7 +1226,7 @@
                                     <div class="status-dot"></div>
                                     참여 가능
                                 </div>
-                                <div class="scenario-countdown" id="bbqCountdown">02:40:00</div>
+                                <div class="scenario-countdown" id="bbqCountdown">02:50:00</div>
                             </div>
                             <div class="scenario-content">
                                 <div class="scenario-info">
@@ -1329,6 +1329,10 @@
                                 <span class="status-label">정답 문제</span>
                                 <span class="status-value" id="correctAnswers">10 / 10</span>
                             </div>
+                            <div class="status-item">
+                                <span class="status-label">획득 포인트</span>
+                                <span class="status-value">⭐ <span id="earnedPointsWin">100</span>P</span>
+                            </div>
                         </div>
 
                         <div class="result-summary">
@@ -1355,6 +1359,10 @@
                             <div class="status-item">
                                 <span class="status-label">정답 문제</span>
                                 <span class="status-value" id="correctAnswersLose">7 / 10</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">획득 포인트</span>
+                                <span class="status-value">⭐ <span id="earnedPointsLose">70</span>P</span>
                             </div>
                         </div>
 
@@ -2006,13 +2014,13 @@
 
         // 카운트다운 타이머
         function startCountdowns() {
-            // 임시: 2시간 40분 카운트다운 (실제로는 서버에서 종료 시간을 받아와야 함)
+            // 임시: 2시간 50분 카운트다운 (실제로는 서버에서 종료 시간을 받아와야 함)
             // 서버 응답 예시: { endTime: '2026-02-07T15:30:00Z' }
             
             const countdowns = {
-                'weddingCountdown': 2 * 60 * 60 + 40 * 60, // 2시간 40분 (9600초)
-                'blindDateCountdown': 2 * 60 * 60 + 40 * 60,
-                'bbqCountdown': 2 * 60 * 60 + 40 * 60
+                'weddingCountdown': 2 * 60 * 60 + 50 * 60, // 2시간 50분 (10200초)
+                'blindDateCountdown': 2 * 60 * 60 + 50 * 60,
+                'bbqCountdown': 2 * 60 * 60 + 50 * 60
             };
             
             Object.keys(countdowns).forEach(id => {
@@ -2323,16 +2331,20 @@
             if (result.isWinner) {
                 // 승자
                 document.getElementById('resultEmoji').style.display = 'none';
-                document.getElementById('resultTitle').textContent = '당신은 대중적 인간입니다';
-                document.getElementById('resultSubtitle').textContent = '전 세계 사람들의 판단 흐름을 끝까지 읽었습니다';
+                document.getElementById('resultTitle').textContent = '🎊 축하합니다! 당신은 가장 대중적인 인간입니다 🎊';
+                document.getElementById('resultSubtitle').textContent = '전 세계 사람들의 판단 흐름을 완벽하게 읽어냈어요! 당신은 트렌드의 중심에 있습니다.';
                 
                 // 1/n 상금 계산 (총 상금 풀을 승자 수로 나눔)
                 const totalPool = 1000; // 총 상금 풀 (예시)
                 const rewardPerWinner = (totalPool / result.totalWinners).toFixed(2);
                 
+                // 리워드 포인트 계산 (문제당 10점)
+                const earnedPoints = result.correctCount * 10;
+                
                 document.getElementById('rewardAmount').textContent = rewardPerWinner + ' USDT';
                 document.getElementById('totalWinners').textContent = result.totalWinners.toLocaleString();
                 document.getElementById('correctAnswers').textContent = `${result.correctCount} / ${result.totalQuestions}`;
+                document.getElementById('earnedPointsWin').textContent = earnedPoints;
                 
                 // 문제별 결과 표시 (전부 정답이므로 간단하게)
                 const resultsHtml = result.questionResults.map((qr, idx) => `
@@ -2357,15 +2369,22 @@
                 const currentPoints = parseInt(document.getElementById('rewardPoints').textContent);
                 updateUserStats({
                     coins: currentCoins + Math.floor(parseFloat(rewardPerWinner)),
-                    rewardPoints: currentPoints + (result.correctCount * 5)
+                    rewardPoints: currentPoints + earnedPoints
                 });
             } else {
                 // 패배 (긍정적 메시지)
+                // 유저 닉네임 가져오기 (임시로 'Player'사용, 실제로는 서버에서)
+                const userName = 'Player'; // 실제로는 API에서 받아올 유저 닉네임
+                
                 document.getElementById('resultEmoji').style.display = 'none';
-                document.getElementById('resultTitle').textContent = '당신은 대중과 다른 선택을 했습니다';
-                document.getElementById('resultSubtitle').textContent = '하지만, 대부분의 사람도 이 지점에서 갈렸습니다';
+                document.getElementById('resultTitle').textContent = `${userName}님은 독특한 시각을 가진 분이네요! 🎨`;
+                document.getElementById('resultSubtitle').textContent = '대중과 다른 선택을 하셨어요. 하지만 걱정 마세요! 대부분의 사람들도 이 지점에서 의견이 갈렸답니다.';
+                
+                // 리워드 포인트 계산 (문제당 10점)
+                const earnedPoints = result.correctCount * 10;
                 
                 document.getElementById('correctAnswersLose').textContent = `${result.correctCount} / ${result.totalQuestions}`;
+                document.getElementById('earnedPointsLose').textContent = earnedPoints;
                 
                 // 문제별 결과 표시
                 const resultsHtml = result.questionResults.map((qr, idx) => `
@@ -2384,6 +2403,12 @@
                 document.getElementById('pendingContent').style.display = 'none';
                 document.getElementById('winnerContent').style.display = 'none';
                 document.getElementById('loserContent').style.display = 'block';
+                
+                // 유저 스탯 업데이트 (리워드 포인트만)
+                const currentPoints = parseInt(document.getElementById('rewardPoints').textContent);
+                updateUserStats({
+                    rewardPoints: currentPoints + earnedPoints
+                });
             }
         }
 
