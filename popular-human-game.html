@@ -138,6 +138,60 @@
             transition: color 0.2s;
         }
 
+        /* 상단 배너 슬라이더 */
+        .top-banner-slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .banner-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .banner-slide {
+            min-width: 100%;
+            height: 0;
+            padding-bottom: 43.75%; /* 16:7 비율 */
+            position: relative;
+            cursor: pointer;
+        }
+
+        .banner-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .banner-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 0 16px;
+            background: #fff;
+        }
+
+        .banner-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d0d0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .banner-dot.active {
+            background: #000;
+            width: 24px;
+            border-radius: 4px;
+        }
+
         /* 홈 화면 */
         .home-screen {
             display: none;
@@ -373,6 +427,46 @@
             color: rgba(255,255,255,0.95);
             line-height: 1.5;
             text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        /* 시작하기 버튼 영역 */
+        .start-game-container {
+            padding: 20px;
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .start-game-btn {
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .start-game-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .start-game-btn .ticket-badge {
+            position: absolute;
+            right: 16px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
         }
 
         /* 진행바 */
@@ -1125,6 +1219,96 @@
             font-weight: 700;
             cursor: pointer;
         }
+
+        /* 게임 시작 확인 팝업 */
+        .game-start-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            padding: 20px;
+        }
+
+        .game-start-popup.active {
+            display: flex;
+        }
+
+        .game-start-popup-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .game-start-popup-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .game-start-info {
+            background: #f8f8f8;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .game-start-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .game-start-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .game-start-info-label {
+            color: #666;
+        }
+
+        .game-start-info-value {
+            font-weight: 700;
+        }
+
+        .game-start-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .game-start-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .game-start-btn-cancel {
+            background: #f8f8f8;
+            color: #000;
+            border: 1px solid #e5e5e5;
+        }
+
+        .game-start-btn-confirm {
+            background: #000;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -1151,6 +1335,34 @@
         <div class="main-content">
             <!-- 홈 화면 -->
             <div class="home-screen active" id="homeScreen">
+                <!-- 상단 배너 슬라이더 -->
+                <div class="top-banner-slider">
+                    <div class="banner-track" id="bannerTrack">
+                        <div class="banner-slide" onclick="navigateBanner('https://example.com/banner1')">
+                            <div class="banner-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        </div>
+                        <div class="banner-slide" onclick="navigateBanner('https://example.com/banner2')">
+                            <div class="banner-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                        </div>
+                        <div class="banner-slide" onclick="navigateBanner('https://example.com/banner3')">
+                            <div class="banner-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                        </div>
+                        <div class="banner-slide" onclick="navigateBanner('#shop')">
+                            <div class="banner-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+                        </div>
+                        <div class="banner-slide" onclick="navigateBanner('#ranking')">
+                            <div class="banner-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                        </div>
+                    </div>
+                    <div class="banner-navigation" id="bannerNavigation">
+                        <span class="banner-dot active" onclick="goToBanner(0)"></span>
+                        <span class="banner-dot" onclick="goToBanner(1)"></span>
+                        <span class="banner-dot" onclick="goToBanner(2)"></span>
+                        <span class="banner-dot" onclick="goToBanner(3)"></span>
+                        <span class="banner-dot" onclick="goToBanner(4)"></span>
+                    </div>
+                </div>
+
                 <div class="scenario-section">
                     <div class="section-title">오늘의 시나리오</div>
                     <div class="scenario-grid">
@@ -1427,6 +1639,31 @@
                     <div class="timeout-popup-title">시간이 종료되었습니다</div>
                     <div class="timeout-popup-text">10분 안에 모든 질문에<br>답변하지 못했습니다.</div>
                     <button class="timeout-popup-btn" onclick="closeTimeoutPopup()">확인</button>
+                </div>
+            </div>
+
+            <!-- 게임 시작 확인 팝업 -->
+            <div class="game-start-popup" id="gameStartPopup">
+                <div class="game-start-popup-content">
+                    <div class="game-start-popup-title">게임을 시작할까요?</div>
+                    <div class="game-start-info">
+                        <div class="game-start-info-item">
+                            <span class="game-start-info-label">필요 티켓</span>
+                            <span class="game-start-info-value">🎫 1개</span>
+                        </div>
+                        <div class="game-start-info-item">
+                            <span class="game-start-info-label">플레이 시간</span>
+                            <span class="game-start-info-value">⏱ 10분</span>
+                        </div>
+                        <div class="game-start-info-item">
+                            <span class="game-start-info-label">문제 수</span>
+                            <span class="game-start-info-value">❓ 10문제</span>
+                        </div>
+                    </div>
+                    <div class="game-start-buttons">
+                        <button class="game-start-btn game-start-btn-cancel" onclick="closeGameStartPopup()">취소</button>
+                        <button class="game-start-btn game-start-btn-confirm" onclick="confirmGameStart()">시작하기</button>
+                    </div>
                 </div>
             </div>
 
@@ -2010,6 +2247,58 @@
             
             // 카운트다운 시작
             startCountdowns();
+            
+            // 배너 슬라이더 초기화
+            initBannerSlider();
+        }
+
+        // 배너 슬라이더 초기화
+        let currentBannerIndex = 0;
+        let bannerInterval;
+
+        function initBannerSlider() {
+            startBannerAutoSlide();
+        }
+
+        function startBannerAutoSlide() {
+            bannerInterval = setInterval(() => {
+                currentBannerIndex = (currentBannerIndex + 1) % 5;
+                updateBannerPosition();
+            }, 5000); // 5초마다 자동 슬라이드
+        }
+
+        function goToBanner(index) {
+            currentBannerIndex = index;
+            updateBannerPosition();
+            // 자동 슬라이드 재시작
+            clearInterval(bannerInterval);
+            startBannerAutoSlide();
+        }
+
+        function updateBannerPosition() {
+            const track = document.getElementById('bannerTrack');
+            const dots = document.querySelectorAll('.banner-dot');
+            
+            track.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentBannerIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function navigateBanner(url) {
+            if (url.startsWith('#')) {
+                // 내부 링크
+                const screen = url.substring(1);
+                switchScreen(screen);
+            } else {
+                // 외부 링크
+                window.open(url, '_blank');
+            }
         }
 
         // 카운트다운 타이머
@@ -2106,16 +2395,44 @@
         // 게임 로직
         // ========================================
         
+        let pendingScenarioId = null;
+
         async function startGame(scenarioId) {
-            // API를 통한 게임 시작
-            const result = await API.startGame(scenarioId);
+            // 시나리오 ID 저장
+            pendingScenarioId = scenarioId;
+            
+            // 확인 팝업 표시
+            document.getElementById('gameStartPopup').classList.add('active');
+        }
+
+        function closeGameStartPopup() {
+            document.getElementById('gameStartPopup').classList.remove('active');
+            pendingScenarioId = null;
+        }
+
+        async function confirmGameStart() {
+            // 팝업 닫기
+            closeGameStartPopup();
+            
+            // 티켓 확인
+            const currentTickets = parseInt(document.getElementById('ticketCount').textContent);
+            if (currentTickets <= 0) {
+                alert('티켓이 부족합니다. 광고를 시청하거나 티켓을 구매해주세요.');
+                return;
+            }
+            
+            // API를 통한 게임 시작 및 티켓 차감
+            const result = await API.startGame(pendingScenarioId);
             if (!result.success) {
                 alert(result.message || '게임을 시작할 수 없습니다.');
                 return;
             }
             
+            // 티켓 차감
+            updateUserStats({ tickets: currentTickets - 1 });
+            
             currentGameId = result.gameId;
-            currentScenario = scenarios[scenarioId];
+            currentScenario = scenarios[pendingScenarioId];
             currentQuestion = 0;
             userAnswers = [];
             correctCount = 0;
@@ -2418,19 +2735,25 @@
             const currentTickets = parseInt(document.getElementById('ticketCount').textContent);
             if (currentTickets > 0) {
                 updateUserStats({ tickets: currentTickets - 1 });
-                backToHome();
-                // 약간의 딜레이 후 같은 시나리오 재시작
-                setTimeout(() => {
-                    const lastScenarioId = Object.keys(scenarios).find(
-                        key => scenarios[key].name === currentScenario.name
-                    );
-                    if (lastScenarioId) {
-                        startGame(lastScenarioId);
-                    }
-                }, 300);
+                
+                // 게임 상태 초기화
+                currentQuestion = 0;
+                userAnswers = [];
+                correctCount = 0;
+                
+                // 결과 화면 숨기고 게임 화면 표시
+                document.getElementById('resultScreen').classList.remove('active');
+                document.getElementById('gameScreen').classList.add('active');
+                
+                // 타이머 재시작
+                startGameTimer();
+                
+                // 첫 문제 로드
+                loadQuestion();
             } else {
                 alert('티켓이 부족합니다. 광고를 시청하거나 티켓을 구매해주세요.');
             }
+        }
         }
 
         function notifyNextEvent() {
