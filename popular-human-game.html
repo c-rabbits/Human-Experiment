@@ -634,7 +634,7 @@
             padding: 0;
             height: 100%;
             background: #fafafa;
-            overflow-y: auto;
+            overflow-y: scroll;
         }
 
         .result-screen.active {
@@ -643,7 +643,7 @@
 
         .result-hero {
             background: #fff;
-            padding: 0 20px 30px;
+            padding: 0 20px 20px;
             text-align: center;
             color: #000;
             position: relative;
@@ -652,7 +652,7 @@
 
         .result-banner {
             width: 100%;
-            margin: 0 0 20px;
+            margin: 50px 0 20px;
             border-radius: 16px;
             overflow: hidden;
             position: relative;
@@ -715,7 +715,7 @@
         }
 
         .result-content {
-            padding: 20px;
+            padding: 0 20px 20px;
             background: #fafafa;
         }
 
@@ -925,6 +925,16 @@
             border-color: #000;
         }
 
+        .btn-dark {
+            background: #000;
+            color: #fff;
+            border: 2px solid #000;
+        }
+
+        .btn-dark:hover {
+            background: #333;
+        }
+
         .btn-orange {
             background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: #fff;
@@ -933,6 +943,17 @@
         .btn-orange:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-dark {
+            background: #000;
+            color: #fff;
+        }
+
+        .btn-dark:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .ticket-badge {
@@ -1151,6 +1172,106 @@
             padding: 40px 20px;
             text-align: center;
             color: #999;
+        }
+
+        /* 상점 스타일 */
+        .shop-section {
+            margin-bottom: 30px;
+        }
+
+        .shop-category-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .shop-item {
+            background: #fff;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .shop-item:hover {
+            border-color: #000;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .shop-item-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .shop-item-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .shop-item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6b35;
+            margin-bottom: 12px;
+        }
+
+        .shop-buy-btn {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shop-buy-btn:hover {
+            background: #333;
+        }
+
+        /* 내 선택 보기 드롭다운 */
+        .my-choices-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f8f8f8;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .my-choices-header:hover {
+            background: #f0f0f0;
+        }
+
+        .dropdown-arrow {
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .my-choices-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
         }
 
         /* 게임 헤더 삭제 */
@@ -1380,19 +1501,19 @@
                 <!-- 상단 배너 슬라이더 -->
                 <div class="top-banner-slider">
                     <div class="banner-track" id="bannerTrack">
-                        <div class="banner-slide" onclick="navigateBanner('https://example.com/banner1')">
+                        <div class="banner-slide" onclick="navigateBanner('https://www.naver.com')">
                             <div class="banner-image" style="background-image: url('Main_Banner_001.png');"></div>
                         </div>
-                        <div class="banner-slide" onclick="navigateBanner('https://example.com/banner2')">
+                        <div class="banner-slide" onclick="navigateBanner('https://www.naver.com')">
                             <div class="banner-image" style="background-image: url('Main_Banner_002.png');"></div>
                         </div>
-                        <div class="banner-slide" onclick="navigateBanner('https://example.com/banner3')">
+                        <div class="banner-slide" onclick="navigateBanner('https://www.naver.com')">
                             <div class="banner-image" style="background-image: url('Main_Banner_003.png');"></div>
                         </div>
-                        <div class="banner-slide" onclick="navigateBanner('#shop')">
+                        <div class="banner-slide" onclick="navigateBanner('https://www.naver.com')">
                             <div class="banner-image" style="background-image: url('Main_Banner_004.png');"></div>
                         </div>
-                        <div class="banner-slide" onclick="navigateBanner('#ranking')">
+                        <div class="banner-slide" onclick="navigateBanner('https://www.naver.com')">
                             <div class="banner-image" style="background-image: url('Main_Banner_005.png');"></div>
                         </div>
                     </div>
@@ -1563,6 +1684,9 @@
                             <button class="action-btn btn-orange" onclick="shareEvent()">
                                 이벤트 공유하기
                             </button>
+                            <button class="action-btn btn-dark" onclick="backToHome()">
+                                메인 화면
+                            </button>
                         </div>
                     </div>
 
@@ -1590,8 +1714,16 @@
                         </div>
 
                         <div class="result-summary">
-                            <div class="summary-title">📊 문제별 결과</div>
-                            <div id="questionResults"></div>
+                            <div class="my-choices-header" onclick="toggleMyChoices('win')" style="cursor: pointer; user-select: none;">
+                                <div class="summary-title">
+                                    <div>👀 내 선택 보기</div>
+                                    <div id="attemptInfoWin" style="font-size: 12px; color: #666; margin-top: 4px;"></div>
+                                </div>
+                                <div class="dropdown-arrow" id="dropdownArrowWin">▼</div>
+                            </div>
+                            <div id="myChoicesContentWin" class="my-choices-content" style="display: none;">
+                                <div id="questionResults"></div>
+                            </div>
                         </div>
 
                         <div class="action-buttons">
@@ -1621,8 +1753,16 @@
                         </div>
 
                         <div class="result-summary">
-                            <div class="summary-title">📊 문제별 결과</div>
-                            <div id="questionResultsLose"></div>
+                            <div class="my-choices-header" onclick="toggleMyChoices('lose')" style="cursor: pointer; user-select: none;">
+                                <div class="summary-title">
+                                    <div>👀 내 선택 보기</div>
+                                    <div id="attemptInfoLose" style="font-size: 12px; color: #666; margin-top: 4px;"></div>
+                                </div>
+                                <div class="dropdown-arrow" id="dropdownArrowLose">▼</div>
+                            </div>
+                            <div id="myChoicesContentLose" class="my-choices-content" style="display: none;">
+                                <div id="questionResultsLose"></div>
+                            </div>
                         </div>
 
                         <div class="action-buttons">
@@ -1630,8 +1770,8 @@
                                 다시 도전하기
                                 <span class="ticket-badge">🎫 -1</span>
                             </button>
-                            <button class="action-btn btn-secondary" onclick="backToHome()">
-                                홈으로 돌아가기
+                            <button class="action-btn btn-dark" onclick="backToHome()">
+                                메인 화면
                             </button>
                         </div>
                     </div>
@@ -1712,7 +1852,42 @@
             <!-- 상점 화면 -->
             <div class="other-screen" id="shopScreen">
                 <div class="screen-title">🛍 상점</div>
-                <div class="placeholder-content">상점 화면 (준비 중)</div>
+                
+                <div class="shop-section">
+                    <div class="shop-category-title">🎫 티켓 구매</div>
+                    <div class="shop-grid">
+                        <div class="shop-item" onclick="buyTickets(10)">
+                            <div class="shop-item-icon">🎫</div>
+                            <div class="shop-item-name">티켓 10개</div>
+                            <div class="shop-item-price">1.0 USDT</div>
+                            <button class="shop-buy-btn">구매하기</button>
+                        </div>
+                        <div class="shop-item" onclick="buyTickets(30)">
+                            <div class="shop-item-icon">🎫</div>
+                            <div class="shop-item-name">티켓 30개</div>
+                            <div class="shop-item-price">3.0 USDT</div>
+                            <button class="shop-buy-btn">구매하기</button>
+                        </div>
+                        <div class="shop-item" onclick="buyTickets(50)">
+                            <div class="shop-item-icon">🎫</div>
+                            <div class="shop-item-name">티켓 50개</div>
+                            <div class="shop-item-price">5.0 USDT</div>
+                            <button class="shop-buy-btn">구매하기</button>
+                        </div>
+                        <div class="shop-item" onclick="buyTickets(100)">
+                            <div class="shop-item-icon">🎫</div>
+                            <div class="shop-item-name">티켓 100개</div>
+                            <div class="shop-item-price">10.0 USDT</div>
+                            <button class="shop-buy-btn">구매하기</button>
+                        </div>
+                        <div class="shop-item" onclick="buyTickets(300)">
+                            <div class="shop-item-icon">🎫</div>
+                            <div class="shop-item-name">티켓 300개</div>
+                            <div class="shop-item-price">30.0 USDT</div>
+                            <button class="shop-buy-btn">구매하기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 랭킹 화면 -->
@@ -2273,6 +2448,7 @@
         let currentGameId = null;
         let gameTimeLeft = 600; // 10분 (초 단위)
         let gameTimerInterval = null;
+        let attemptCount = 0; // 도전 횟수 추적
 
         // ========================================
         // 초기화
@@ -2885,6 +3061,14 @@
         async function showFinalResult(result) {
             document.getElementById('pendingMessage').style.display = 'none';
             
+            // 도전 횟수 증가
+            attemptCount++;
+            
+            // 도전 시간 생성
+            const now = new Date();
+            const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const attemptInfo = `도전 #${attemptCount} · ${timeString}`;
+            
             // 배너 이미지 설정
             const bannerImg = document.getElementById('resultBannerImg');
             bannerImg.style.backgroundImage = `url('${currentScenario.bannerImage}')`;
@@ -2894,6 +3078,9 @@
                 document.getElementById('resultEmoji').style.display = 'none';
                 document.getElementById('resultTitle').textContent = '🎊 축하합니다! 당신은 가장 대중적인 인간입니다 🎊';
                 document.getElementById('resultSubtitle').textContent = '전 세계 사람들의 판단 흐름을 완벽하게 읽어냈어요! 당신은 트렌드의 중심에 있습니다.';
+                
+                // 도전 정보 표시
+                document.getElementById('attemptInfoWin').textContent = attemptInfo;
                 
                 // 1/n 상금 계산 (총 상금 풀을 승자 수로 나눔)
                 const totalPool = 1000; // 총 상금 풀 (예시)
@@ -2936,6 +3123,9 @@
                 // 패배 (긍정적 메시지)
                 // 유저 닉네임 가져오기 (임시로 'Player'사용, 실제로는 서버에서)
                 const userName = 'Player'; // 실제로는 API에서 받아올 유저 닉네임
+                
+                // 도전 정보 표시
+                document.getElementById('attemptInfoLose').textContent = attemptInfo;
                 
                 document.getElementById('resultEmoji').style.display = 'none';
                 document.getElementById('resultTitle').textContent = `${userName}님은 독특한 시각을 가진 분이네요! 🎨`;
@@ -3126,6 +3316,38 @@ ${window.location.href}`;
             
             document.getElementById('shareText').textContent = shareText;
             document.getElementById('sharePopup').classList.add('active');
+        }
+
+        // 내 선택 보기 토글
+        function toggleMyChoices(type) {
+            const contentId = type === 'win' ? 'myChoicesContentWin' : 'myChoicesContentLose';
+            const arrowId = type === 'win' ? 'dropdownArrowWin' : 'dropdownArrowLose';
+            
+            const content = document.getElementById(contentId);
+            const arrow = document.getElementById(arrowId);
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                arrow.classList.add('open');
+            } else {
+                content.style.display = 'none';
+                arrow.classList.remove('open');
+            }
+        }
+
+        // 티켓 구매
+        function buyTickets(amount) {
+            const price = (amount * 0.1).toFixed(1);
+            const confirmPurchase = confirm(`티켓 ${amount}개를 ${price} USDT에 구매하시겠습니까?`);
+            
+            if (confirmPurchase) {
+                // TODO: 실제 결제 로직 구현
+                alert('결제 기능은 준비 중입니다.');
+                
+                // 결제 성공 시:
+                // const currentTickets = parseInt(document.getElementById('ticketCount').textContent);
+                // updateUserStats({ tickets: currentTickets + amount });
+            }
         }
 
         // 디버그 함수 (임시 테스트용)
