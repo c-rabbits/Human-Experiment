@@ -2803,7 +2803,10 @@
         let bannerInterval;
         let touchStartX = 0;
         let touchEndX = 0;
+        let touchStartTime = 0;
         let isDragging = false;
+        const SWIPE_THRESHOLD = 80; // 80px 이상 이동 시 스와이프
+        const SWIPE_TIME_THRESHOLD = 300; // 300ms 이내 빠른 스와이프
 
         function initBannerSlider() {
             const track = document.getElementById('bannerTrack');
@@ -2830,6 +2833,7 @@
 
         function handleTouchStart(e) {
             touchStartX = e.touches[0].clientX;
+            touchStartTime = Date.now();
             isDragging = true;
             document.getElementById('bannerTrack').classList.add('dragging');
             clearInterval(bannerInterval);
@@ -2846,18 +2850,25 @@
             document.getElementById('bannerTrack').classList.remove('dragging');
             
             const diff = touchStartX - touchEndX;
+            const touchDuration = Date.now() - touchStartTime;
+            const distance = Math.abs(diff);
             
-            if (Math.abs(diff) > 50) { // 50px 이상 스와이프
+            // 스와이프 판단 기준:
+            // 1. 80px 이상 이동
+            // 2. 또는 300ms 이내 빠른 스와이프 (30px 이상)
+            const isSwipe = distance > SWIPE_THRESHOLD || 
+                           (distance > 30 && touchDuration < SWIPE_TIME_THRESHOLD);
+            
+            if (isSwipe) {
+                // 스와이프
                 if (diff > 0) {
-                    // 왼쪽으로 스와이프 (다음)
                     currentBannerIndex = (currentBannerIndex + 1) % 5;
                 } else {
-                    // 오른쪽으로 스와이프 (이전)
                     currentBannerIndex = (currentBannerIndex - 1 + 5) % 5;
                 }
                 updateBannerPosition();
             } else {
-                // 50px 미만 이동 = 클릭으로 간주
+                // 클릭 (작은 이동 또는 긴 터치)
                 handleBannerClick();
             }
             
@@ -2866,6 +2877,7 @@
 
         function handleMouseDown(e) {
             touchStartX = e.clientX;
+            touchStartTime = Date.now();
             isDragging = true;
             document.getElementById('bannerTrack').classList.add('dragging');
             clearInterval(bannerInterval);
@@ -2882,8 +2894,17 @@
             document.getElementById('bannerTrack').classList.remove('dragging');
             
             const diff = touchStartX - touchEndX;
+            const touchDuration = Date.now() - touchStartTime;
+            const distance = Math.abs(diff);
             
-            if (Math.abs(diff) > 50) {
+            // 스와이프 판단 기준:
+            // 1. 80px 이상 이동
+            // 2. 또는 300ms 이내 빠른 스와이프 (30px 이상)
+            const isSwipe = distance > SWIPE_THRESHOLD || 
+                           (distance > 30 && touchDuration < SWIPE_TIME_THRESHOLD);
+            
+            if (isSwipe) {
+                // 스와이프
                 if (diff > 0) {
                     currentBannerIndex = (currentBannerIndex + 1) % 5;
                 } else {
@@ -2891,7 +2912,7 @@
                 }
                 updateBannerPosition();
             } else {
-                // 50px 미만 이동 = 클릭으로 간주
+                // 클릭 (작은 이동 또는 긴 터치)
                 handleBannerClick();
             }
             
