@@ -1027,32 +1027,129 @@
                 </div>
             </div>
 
-            <!-- 프로필 화면 -->
+            <!-- 지갑 화면 -->
             <div class="other-screen" id="profileScreen">
-                <div class="screen-title">👤 프로필</div>
-                <div style="display:flex; flex-direction:column; align-items:center; padding:24px 0;">
-                    <img id="profilePageImg" src="" alt="프로필" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #e5e5e5; margin-bottom:12px; display:none;">
-                    <div id="profilePageName" style="font-size:20px; font-weight:700; color:#000; margin-bottom:4px;"></div>
-                    <div id="profilePageStatus" style="font-size:14px; color:#999; margin-bottom:20px;"></div>
-                    <div style="background:#f8f8f8; border-radius:12px; padding:16px 20px; width:100%;">
-                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
-                            <span style="color:#999; font-size:14px;">LINE ID</span>
-                            <span id="profilePageUserId" style="font-size:14px; font-weight:600; color:#000;">-</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
-                            <span style="color:#999; font-size:14px;">보유 코인</span>
-                            <span id="profilePageCoins" style="font-size:14px; font-weight:600; color:#000;">-</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
-                            <span style="color:#999; font-size:14px;">리워드 포인트</span>
-                            <span id="profilePagePoints" style="font-size:14px; font-weight:600; color:#000;">-</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; padding:8px 0;">
-                            <span style="color:#999; font-size:14px;">보유 티켓</span>
-                            <span id="profilePageTickets" style="font-size:14px; font-weight:600; color:#000;">-</span>
+                <div class="screen-title">💎 지갑</div>
+
+                <!-- 프로필 카드 -->
+                <div class="wallet-profile-card">
+                    <img class="wallet-profile-img" id="walletProfileImg" src="" alt="프로필" style="display:none;">
+                    <div class="wallet-profile-info">
+                        <div class="wallet-profile-name" id="walletProfileName">-</div>
+                        <div class="wallet-profile-badge">
+                            <span class="wallet-line-badge">LINE 연동됨</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- UID 섹션 -->
+                <div class="wallet-info-card">
+                    <div class="wallet-info-label">대중적인간 UID</div>
+                    <div class="wallet-info-row">
+                        <span class="wallet-info-value" id="walletUID">-</span>
+                        <button class="wallet-copy-btn" onclick="copyToClipboard(document.getElementById('walletUID').textContent, 'UID')">
+                            📋 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 지갑 주소 섹션 -->
+                <div class="wallet-info-card">
+                    <div class="wallet-info-label">LINE 디앱 지갑주소</div>
+                    <div class="wallet-info-row">
+                        <span class="wallet-info-value wallet-address" id="walletAddress">-</span>
+                        <button class="wallet-copy-btn" onclick="copyToClipboard(document.getElementById('walletAddress').dataset.full, '지갑주소')">
+                            📋 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 보유 토큰 섹션 -->
+                <div class="wallet-section-title">보유 토큰</div>
+                <div class="wallet-token-card">
+                    <div class="wallet-token-row">
+                        <div class="wallet-token-info">
+                            <span class="wallet-token-icon">💵</span>
+                            <span class="wallet-token-name">USDT</span>
+                        </div>
+                        <div class="wallet-token-right">
+                            <span class="wallet-token-balance" id="walletUSDT">0.00</span>
+                            <button class="wallet-claim-btn" onclick="claimToken('usdt')">
+                                클레임 <span class="wallet-claimable" id="walletUSDTClaimable">0.00</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="wallet-token-divider"></div>
+                    <div class="wallet-token-row">
+                        <div class="wallet-token-info">
+                            <span class="wallet-token-icon">🪙</span>
+                            <span class="wallet-token-name">KAIA</span>
+                        </div>
+                        <div class="wallet-token-right">
+                            <span class="wallet-token-balance" id="walletKAIA">0.00</span>
+                            <button class="wallet-claim-btn" onclick="claimToken('kaia')">
+                                클레임 <span class="wallet-claimable" id="walletKAIAClaimable">0.00</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 재화 정보 (기존 유지) -->
+                <div class="wallet-section-title">게임 재화</div>
+                <div class="wallet-asset-card">
+                    <div class="wallet-asset-row">
+                        <span class="wallet-asset-label">🪙 보유 코인</span>
+                        <span class="wallet-asset-value" id="walletCoins">-</span>
+                    </div>
+                    <div class="wallet-asset-row">
+                        <span class="wallet-asset-label">⭐ 리워드 포인트</span>
+                        <span class="wallet-asset-value" id="walletPoints">-</span>
+                    </div>
+                    <div class="wallet-asset-row">
+                        <span class="wallet-asset-label">🎫 보유 티켓</span>
+                        <span class="wallet-asset-value" id="walletTickets">-</span>
+                    </div>
+                </div>
+
+                <!-- 거래 기록 메뉴 -->
+                <div class="wallet-section-title">거래 기록</div>
+                <div class="wallet-menu-card">
+                    <div class="wallet-menu-item" onclick="showPaymentHistory()">
+                        <span class="wallet-menu-icon">💳</span>
+                        <span class="wallet-menu-label">결제기록</span>
+                        <span class="wallet-menu-arrow">›</span>
+                    </div>
+                    <div class="wallet-menu-divider"></div>
+                    <div class="wallet-menu-item" onclick="showClaimHistory()">
+                        <span class="wallet-menu-icon">📥</span>
+                        <span class="wallet-menu-label">클레임기록</span>
+                        <span class="wallet-menu-arrow">›</span>
+                    </div>
+                </div>
+
+                <!-- 결제기록 서브 패널 -->
+                <div class="wallet-history-panel" id="paymentHistoryPanel" style="display:none;">
+                    <div class="wallet-history-header">
+                        <button class="wallet-history-back" onclick="hidePaymentHistory()">← 뒤로</button>
+                        <span class="wallet-history-title">💳 결제기록</span>
+                    </div>
+                    <div class="wallet-history-list" id="paymentHistoryList">
+                        <div class="wallet-history-empty">결제기록이 없습니다.</div>
+                    </div>
+                </div>
+
+                <!-- 클레임기록 서브 패널 -->
+                <div class="wallet-history-panel" id="claimHistoryPanel" style="display:none;">
+                    <div class="wallet-history-header">
+                        <button class="wallet-history-back" onclick="hideClaimHistory()">← 뒤로</button>
+                        <span class="wallet-history-title">📥 클레임기록</span>
+                    </div>
+                    <div class="wallet-history-list" id="claimHistoryList">
+                        <div class="wallet-history-empty">클레임기록이 없습니다.</div>
+                    </div>
+                </div>
+
+                <div style="height: 20px;"></div>
             </div>
 
             <!-- 설정 화면 -->
@@ -1203,8 +1300,8 @@
                 <div class="nav-label">홈</div>
             </div>
             <div class="nav-item" onclick="switchScreen('profile')">
-                <div class="nav-icon">👤</div>
-                <div class="nav-label">프로필</div>
+                <div class="nav-icon">💎</div>
+                <div class="nav-label">지갑</div>
             </div>
             <div class="nav-item" onclick="switchScreen('settings')">
                 <div class="nav-icon">⚙️</div>

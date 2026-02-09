@@ -37,7 +37,7 @@ async function initApp() {
     console.log('유저 정보:', userInfo);
     if (userInfo) {
         updateUserStats(userInfo);
-        updateProfilePage(userInfo);
+        updateWalletPage(userInfo);
     }
 
     // 카운트다운 시작

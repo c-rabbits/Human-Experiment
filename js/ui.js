@@ -248,26 +248,194 @@ function updateUserStats(data) {
     }
 }
 
-// 프로필 페이지 업데이트
-function updateProfilePage(data) {
-    const pageImg = document.getElementById('profilePageImg');
-    const pageName = document.getElementById('profilePageName');
-    const pageStatus = document.getElementById('profilePageStatus');
-    const pageUserId = document.getElementById('profilePageUserId');
-    const pageCoins = document.getElementById('profilePageCoins');
-    const pagePoints = document.getElementById('profilePagePoints');
-    const pageTickets = document.getElementById('profilePageTickets');
+// 지갑 페이지 업데이트
+function updateWalletPage(data) {
+    // 프로필 카드
+    const walletImg = document.getElementById('walletProfileImg');
+    const walletName = document.getElementById('walletProfileName');
 
     if (data.pictureUrl) {
-        pageImg.src = data.pictureUrl;
-        pageImg.style.display = 'block';
+        walletImg.src = data.pictureUrl;
+        walletImg.style.display = 'block';
     }
-    pageName.textContent = data.displayName || data.characterName || '';
-    pageStatus.textContent = data.statusMessage || '';
-    pageUserId.textContent = data.userId ? data.userId.substring(0, 10) + '...' : '-';
-    pageCoins.textContent = data.coins !== undefined ? data.coins.toLocaleString() : '-';
-    pagePoints.textContent = data.rewardPoints !== undefined ? data.rewardPoints.toLocaleString() : '-';
-    pageTickets.textContent = data.tickets !== undefined ? data.tickets : '-';
+    walletName.textContent = data.displayName || data.characterName || '-';
+
+    // UID
+    const walletUID = document.getElementById('walletUID');
+    walletUID.textContent = data.uid || '-';
+
+    // 지갑 주소 (앞10자...뒤6자 / 전체 주소를 data-full에 저장)
+    const walletAddress = document.getElementById('walletAddress');
+    if (data.walletAddress) {
+        const addr = data.walletAddress;
+        walletAddress.textContent = addr.substring(0, 10) + '...' + addr.substring(addr.length - 6);
+        walletAddress.dataset.full = addr;
+    } else {
+        walletAddress.textContent = '-';
+        walletAddress.dataset.full = '';
+    }
+
+    // 토큰 잔액
+    const walletUSDT = document.getElementById('walletUSDT');
+    const walletKAIA = document.getElementById('walletKAIA');
+    const walletUSDTClaimable = document.getElementById('walletUSDTClaimable');
+    const walletKAIAClaimable = document.getElementById('walletKAIAClaimable');
+
+    if (data.tokenBalance) {
+        walletUSDT.textContent = data.tokenBalance.usdt.toFixed(2);
+        walletKAIA.textContent = data.tokenBalance.kaia.toFixed(2);
+    }
+    if (data.claimable) {
+        walletUSDTClaimable.textContent = data.claimable.usdt.toFixed(2);
+        walletKAIAClaimable.textContent = data.claimable.kaia.toFixed(2);
+    }
+
+    // 게임 재화
+    const walletCoins = document.getElementById('walletCoins');
+    const walletPoints = document.getElementById('walletPoints');
+    const walletTickets = document.getElementById('walletTickets');
+
+    walletCoins.textContent = data.coins !== undefined ? data.coins.toLocaleString() : '-';
+    walletPoints.textContent = data.rewardPoints !== undefined ? data.rewardPoints.toLocaleString() : '-';
+    walletTickets.textContent = data.tickets !== undefined ? data.tickets : '-';
+}
+
+// 클립보드 복사
+function copyToClipboard(text, label) {
+    if (!text || text === '-') {
+        showToast('복사할 내용이 없습니다');
+        return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(label + ' 복사 완료!');
+        }).catch(() => {
+            fallbackCopyToClipboard(text, label);
+        });
+    } else {
+        fallbackCopyToClipboard(text, label);
+    }
+}
+
+function fallbackCopyToClipboard(text, label) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        showToast(label + ' 복사 완료!');
+    } catch (e) {
+        showToast('복사에 실패했습니다');
+    }
+    document.body.removeChild(textarea);
+}
+
+// 토큰 클레임
+function claimToken(tokenType) {
+    const typeName = tokenType.toUpperCase();
+    const claimableEl = document.getElementById(
+        tokenType === 'usdt' ? 'walletUSDTClaimable' : 'walletKAIAClaimable'
+    );
+    const balanceEl = document.getElementById(
+        tokenType === 'usdt' ? 'walletUSDT' : 'walletKAIA'
+    );
+
+    const claimableAmount = parseFloat(claimableEl.textContent);
+    if (claimableAmount <= 0) {
+        showToast('클레임 가능한 ' + typeName + '이 없습니다');
+        return;
+    }
+
+    // 목업: 잔액에 합산 + 클레임 가능 금액 0으로
+    const currentBalance = parseFloat(balanceEl.textContent);
+    balanceEl.textContent = (currentBalance + claimableAmount).toFixed(2);
+    claimableEl.textContent = '0.00';
+
+    showToast(typeName + ' ' + claimableAmount.toFixed(2) + ' 클레임 완료!');
+}
+
+// 결제기록 표시/숨기기
+function showPaymentHistory() {
+    const panel = document.getElementById('paymentHistoryPanel');
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        // 목업 데이터 로드
+        loadPaymentHistory();
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+function hidePaymentHistory() {
+    document.getElementById('paymentHistoryPanel').style.display = 'none';
+}
+
+function loadPaymentHistory() {
+    const list = document.getElementById('paymentHistoryList');
+    // 목업 결제기록 데이터
+    const mockPayments = [
+        { title: '티켓 5장 구매', date: '2025-01-15 14:30', amount: '-5,000원' },
+        { title: '코인 1000개 구매', date: '2025-01-10 09:15', amount: '-3,000원' },
+        { title: '프리미엄 패스', date: '2025-01-05 18:42', amount: '-9,900원' }
+    ];
+
+    if (mockPayments.length === 0) {
+        list.innerHTML = '<div class="wallet-history-empty">결제기록이 없습니다.</div>';
+        return;
+    }
+
+    list.innerHTML = mockPayments.map(p => `
+        <div class="wallet-history-item">
+            <div class="wallet-history-item-left">
+                <span class="wallet-history-item-title">${p.title}</span>
+                <span class="wallet-history-item-date">${p.date}</span>
+            </div>
+            <span class="wallet-history-item-amount negative">${p.amount}</span>
+        </div>
+    `).join('');
+}
+
+// 클레임기록 표시/숨기기
+function showClaimHistory() {
+    const panel = document.getElementById('claimHistoryPanel');
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        loadClaimHistory();
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+function hideClaimHistory() {
+    document.getElementById('claimHistoryPanel').style.display = 'none';
+}
+
+function loadClaimHistory() {
+    const list = document.getElementById('claimHistoryList');
+    // 목업 클레임기록 데이터
+    const mockClaims = [
+        { title: 'USDT 클레임', date: '2025-01-14 11:20', amount: '+12.50 USDT' },
+        { title: 'KAIA 클레임', date: '2025-01-12 16:05', amount: '+150.00 KAIA' },
+        { title: 'USDT 클레임', date: '2025-01-08 08:30', amount: '+8.75 USDT' }
+    ];
+
+    if (mockClaims.length === 0) {
+        list.innerHTML = '<div class="wallet-history-empty">클레임기록이 없습니다.</div>';
+        return;
+    }
+
+    list.innerHTML = mockClaims.map(c => `
+        <div class="wallet-history-item">
+            <div class="wallet-history-item-left">
+                <span class="wallet-history-item-title">${c.title}</span>
+                <span class="wallet-history-item-date">${c.date}</span>
+            </div>
+            <span class="wallet-history-item-amount positive">${c.amount}</span>
+        </div>
+    `).join('');
 }
 
 // ========================================

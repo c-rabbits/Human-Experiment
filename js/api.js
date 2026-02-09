@@ -15,16 +15,31 @@ const API = {
             // });
             // return await response.json();
 
-            // LIFF 프로필 + 임시 게임 데이터 결합
+            // LIFF 프로필 + 임시 게임 데이터 + 지갑 데이터 결합
+            const userId = liffProfile ? liffProfile.userId : 'user123';
+
+            // UID 생성 (userId 앞 8자 기반)
+            const uidSuffix = userId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 8).toUpperCase();
+            const uid = 'PH-' + uidSuffix;
+
+            // 목업 지갑주소 (향후 백엔드 연동 시 실제 주소로 교체)
+            const walletAddress = '0x' + Array.from(userId.substring(0, 20))
+                .map(c => c.charCodeAt(0).toString(16)).join('').substring(0, 40).padEnd(40, '0');
+
             return {
-                userId: liffProfile ? liffProfile.userId : 'user123',
+                userId: userId,
                 displayName: liffProfile ? liffProfile.displayName : '대중러버',
                 pictureUrl: liffProfile ? liffProfile.pictureUrl : '',
                 statusMessage: liffProfile ? (liffProfile.statusMessage || '') : '',
                 characterName: liffProfile ? liffProfile.displayName : '대중러버',
                 coins: 1250,
                 rewardPoints: 850,
-                tickets: 5
+                tickets: 5,
+                // 지갑 데이터
+                uid: uid,
+                walletAddress: walletAddress,
+                tokenBalance: { usdt: 0.00, kaia: 0.00 },
+                claimable: { usdt: 12.50, kaia: 150.00 }
             };
         } catch (error) {
             console.error('유저 정보 로드 실패:', error);
