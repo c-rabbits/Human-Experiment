@@ -6,14 +6,16 @@
 // 배너 슬라이더
 // ========================================
 
-let currentBannerIndex = 0;
+let currentBannerIndex = 0;    // 실제 배너 인덱스 (0 ~ bannerCount-1)
+let bannerVisualIndex = 0;     // 트랙 상의 시각적 인덱스 (클론 포함)
+let bannerCount = 0;           // 실제 배너 개수
 let bannerInterval;
 let touchStartX = 0;
 let touchEndX = 0;
 let touchStartTime = 0;
 let isDragging = false;
-const SWIPE_THRESHOLD = 80; // 80px 이상 이동 시 스와이프
-const SWIPE_TIME_THRESHOLD = 300; // 300ms 이내 빠른 스와이프
+const SWIPE_THRESHOLD = 100; // 100px 이상 이동 시 스와이프
+const SWIPE_TIME_THRESHOLD = 600; // 600ms 이내 제스처만 스와이프 처리
 
 function initBannerSlider() {
     const track = document.getElementById('bannerTrack');
@@ -23,6 +25,32 @@ function initBannerSlider() {
         console.error('배너 슬라이더 엘리먼트를 찾을 수 없습니다');
         return;
     }
+
+    // 실제 배너 슬라이드 목록
+    const slides = track.querySelectorAll('.banner-slide');
+    bannerCount = slides.length;
+
+    if (bannerCount === 0) {
+        console.error('배너 슬라이드가 없습니다');
+        return;
+    }
+
+    // 무한 루프용 클론 슬라이드 추가 (앞/뒤에 한 장씩)
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone = slides[slides.length - 1].cloneNode(true);
+    firstClone.classList.add('banner-clone');
+    lastClone.classList.add('banner-clone');
+
+    track.appendChild(firstClone);            // 맨 뒤에 첫 번째 슬라이드 클론
+    track.insertBefore(lastClone, slides[0]); // 맨 앞에 마지막 슬라이드 클론
+
+    // 초기 위치: 첫 번째 실제 배너(시각적 인덱스 1)
+    currentBannerIndex = 0;
+    bannerVisualIndex = 1;
+    track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
+
+    // 루프용 transition 종료 처리
+    track.addEventListener('transitionend', handleBannerTransitionEnd);
 
     // 터치 이벤트
     slider.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -40,6 +68,7 @@ function initBannerSlider() {
 
 function handleTouchStart(e) {
     touchStartX = e.touches[0].clientX;
+    touchEndX = touchStartX; // 초기값을 시작 위치로 설정 (탭을 스와이프로 오인하지 않도록)
     touchStartTime = Date.now();
     isDragging = true;
     document.getElementById('bannerTrack').classList.add('dragging');
@@ -60,18 +89,20 @@ function handleTouchEnd(e) {
     const touchDuration = Date.now() - touchStartTime;
     const distance = Math.abs(diff);
 
-    // 스와이프 판단 기준:
-    // 1. 80px 이상 이동
-    // 2. 또는 300ms 이내 빠른 스와이프 (30px 이상)
-    const isSwipe = distance > SWIPE_THRESHOLD ||
-                   (distance > 30 && touchDuration < SWIPE_TIME_THRESHOLD);
+    // 스와이프 판단 기준 (감도 완화):
+    // 일정 거리 이상(SWIPE_THRESHOLD) + 비교적 짧은 시간 안에 이동한 경우만 스와이프로 처리
+    const isSwipe = distance >= SWIPE_THRESHOLD && touchDuration < SWIPE_TIME_THRESHOLD;
 
     if (isSwipe) {
         // 스와이프
         if (diff > 0) {
-            currentBannerIndex = (currentBannerIndex + 1) % 5;
+            // 왼쪽으로 스와이프 → 다음 배너
+            currentBannerIndex = (currentBannerIndex + 1) % bannerCount;
+            bannerVisualIndex += 1;
         } else {
-            currentBannerIndex = (currentBannerIndex - 1 + 5) % 5;
+            // 오른쪽으로 스와이프 → 이전 배너
+            currentBannerIndex = (currentBannerIndex - 1 + bannerCount) % bannerCount;
+            bannerVisualIndex -= 1;
         }
         updateBannerPosition();
     } else {
@@ -84,6 +115,7 @@ function handleTouchEnd(e) {
 
 function handleMouseDown(e) {
     touchStartX = e.clientX;
+    touchEndX = touchStartX; // 마우스도 동일하게 초기값 설정
     touchStartTime = Date.now();
     isDragging = true;
     document.getElementById('bannerTrack').classList.add('dragging');
@@ -104,18 +136,20 @@ function handleMouseEnd(e) {
     const touchDuration = Date.now() - touchStartTime;
     const distance = Math.abs(diff);
 
-    // 스와이프 판단 기준:
-    // 1. 80px 이상 이동
-    // 2. 또는 300ms 이내 빠른 스와이프 (30px 이상)
-    const isSwipe = distance > SWIPE_THRESHOLD ||
-                   (distance > 30 && touchDuration < SWIPE_TIME_THRESHOLD);
+    // 스와이프 판단 기준 (감도 완화):
+    // 일정 거리 이상(SWIPE_THRESHOLD) + 비교적 짧은 시간 안에 이동한 경우만 스와이프로 처리
+    const isSwipe = distance >= SWIPE_THRESHOLD && touchDuration < SWIPE_TIME_THRESHOLD;
 
     if (isSwipe) {
         // 스와이프
         if (diff > 0) {
-            currentBannerIndex = (currentBannerIndex + 1) % 5;
+            // 왼쪽으로 스와이프 → 다음 배너
+            currentBannerIndex = (currentBannerIndex + 1) % bannerCount;
+            bannerVisualIndex += 1;
         } else {
-            currentBannerIndex = (currentBannerIndex - 1 + 5) % 5;
+            // 오른쪽으로 스와이프 → 이전 배너
+            currentBannerIndex = (currentBannerIndex - 1 + bannerCount) % bannerCount;
+            bannerVisualIndex -= 1;
         }
         updateBannerPosition();
     } else {
@@ -140,13 +174,18 @@ function handleBannerClick() {
 function startBannerAutoSlide() {
     clearInterval(bannerInterval);
     bannerInterval = setInterval(() => {
-        currentBannerIndex = (currentBannerIndex + 1) % 5;
+        // 자동으로 다음 배너로 이동 (무한 루프)
+        currentBannerIndex = (currentBannerIndex + 1) % bannerCount;
+        bannerVisualIndex += 1;
         updateBannerPosition();
     }, 5000); // 5초마다 자동 슬라이드
 }
 
 function goToBanner(index) {
+    // 점(인디케이터) 클릭 시 해당 배너로 즉시 이동
     currentBannerIndex = index;
+    // 실제 배너 인덱스는 0부터 시작, 시각적 인덱스는 클론 한 장이 앞에 있으므로 +1
+    bannerVisualIndex = index + 1;
     updateBannerPosition();
     // 자동 슬라이드 재시작
     startBannerAutoSlide();
@@ -161,7 +200,8 @@ function updateBannerPosition() {
         return;
     }
 
-    track.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
+    // 시각적 인덱스를 기준으로 트랙 이동 (클론 포함)
+    track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
 
     dots.forEach((dot, index) => {
         if (index === currentBannerIndex) {
@@ -170,6 +210,32 @@ function updateBannerPosition() {
             dot.classList.remove('active');
         }
     });
+}
+
+// 배너 무한 루프 처리를 위한 transition 종료 핸들러
+function handleBannerTransitionEnd() {
+    const track = document.getElementById('bannerTrack');
+    if (!track) return;
+
+    // transition 없이 위치 보정하기 위해 dragging 클래스를 잠시 사용
+    if (bannerVisualIndex === 0) {
+        // 왼쪽 끝 클론에 도달 → 마지막 실제 배너로 점프
+        track.classList.add('dragging'); // CSS에서 transition 제거
+        bannerVisualIndex = bannerCount;
+        track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
+        // 다음 프레임에 transition 복원
+        requestAnimationFrame(() => {
+            track.classList.remove('dragging');
+        });
+    } else if (bannerVisualIndex === bannerCount + 1) {
+        // 오른쪽 끝 클론에 도달 → 첫 번째 실제 배너로 점프
+        track.classList.add('dragging');
+        bannerVisualIndex = 1;
+        track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
+        requestAnimationFrame(() => {
+            track.classList.remove('dragging');
+        });
+    }
 }
 
 function navigateBanner(url) {
