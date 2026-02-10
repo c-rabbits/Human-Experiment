@@ -127,24 +127,14 @@ function handleMouseEnd(e) {
 }
 
 function handleBannerClick() {
-    // 현재 배너의 링크로 이동
-    const bannerLinks = [
-        'https://www.naver.com',
-        'https://www.naver.com',
-        'https://www.naver.com',
-        'https://www.naver.com',
-        'https://www.naver.com'
-    ];
-
-    const link = bannerLinks[currentBannerIndex];
-    if (link.startsWith('#')) {
-        // 내부 링크
-        const screen = link.substring(1);
-        switchScreen(screen);
-    } else {
-        // 외부 링크
-        window.open(link, '_blank');
+    // 현재 배너 인덱스에 따라 동작
+    // 0번 배너: 지갑 → 친구초대 이벤트 섹션으로 이동
+    if (currentBannerIndex === 0) {
+        onInviteBannerClick();
+        return;
     }
+
+    // 나머지 배너는 추후 외부 링크 등으로 확장 가능
 }
 
 function startBannerAutoSlide() {
