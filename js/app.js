@@ -53,7 +53,6 @@ async function initApp() {
     startUpcomingCountdowns();
 
     // 설정 화면 초기화
-    updateSettingsProfile();
     initSettingsToggles();
 }
 

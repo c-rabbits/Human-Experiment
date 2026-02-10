@@ -507,36 +507,56 @@
 
                 <div class="shop-section">
                     <div class="shop-category-title">🎫 티켓 구매</div>
-                    <div class="shop-grid">
-                        <div class="shop-item" onclick="buyTickets(10)">
-                            <div class="shop-item-icon">🎫</div>
-                            <div class="shop-item-name">티켓 10개</div>
-                            <div class="shop-item-price">1.0 USDT</div>
-                            <button class="shop-buy-btn">구매하기</button>
+                    <div class="shop-list">
+                        <div class="shop-list-item" onclick="buyTickets(10)">
+                            <div class="shop-list-item-left">
+                                <span class="shop-list-item-icon">🎫</span>
+                                <span class="shop-list-item-name">티켓 10개</span>
+                            </div>
+                            <div class="shop-list-item-right">
+                                <span class="shop-list-item-price">1.0 USDT</span>
+                                <button class="shop-list-buy-btn">구매</button>
+                            </div>
                         </div>
-                        <div class="shop-item" onclick="buyTickets(30)">
-                            <div class="shop-item-icon">🎫</div>
-                            <div class="shop-item-name">티켓 30개</div>
-                            <div class="shop-item-price">3.0 USDT</div>
-                            <button class="shop-buy-btn">구매하기</button>
+                        <div class="shop-list-item" onclick="buyTickets(30)">
+                            <div class="shop-list-item-left">
+                                <span class="shop-list-item-icon">🎫</span>
+                                <span class="shop-list-item-name">티켓 30개</span>
+                            </div>
+                            <div class="shop-list-item-right">
+                                <span class="shop-list-item-price">3.0 USDT</span>
+                                <button class="shop-list-buy-btn">구매</button>
+                            </div>
                         </div>
-                        <div class="shop-item" onclick="buyTickets(50)">
-                            <div class="shop-item-icon">🎫</div>
-                            <div class="shop-item-name">티켓 50개</div>
-                            <div class="shop-item-price">5.0 USDT</div>
-                            <button class="shop-buy-btn">구매하기</button>
+                        <div class="shop-list-item" onclick="buyTickets(50)">
+                            <div class="shop-list-item-left">
+                                <span class="shop-list-item-icon">🎫</span>
+                                <span class="shop-list-item-name">티켓 50개</span>
+                            </div>
+                            <div class="shop-list-item-right">
+                                <span class="shop-list-item-price">5.0 USDT</span>
+                                <button class="shop-list-buy-btn">구매</button>
+                            </div>
                         </div>
-                        <div class="shop-item" onclick="buyTickets(100)">
-                            <div class="shop-item-icon">🎫</div>
-                            <div class="shop-item-name">티켓 100개</div>
-                            <div class="shop-item-price">10.0 USDT</div>
-                            <button class="shop-buy-btn">구매하기</button>
+                        <div class="shop-list-item" onclick="buyTickets(100)">
+                            <div class="shop-list-item-left">
+                                <span class="shop-list-item-icon">🎫</span>
+                                <span class="shop-list-item-name">티켓 100개</span>
+                            </div>
+                            <div class="shop-list-item-right">
+                                <span class="shop-list-item-price">10.0 USDT</span>
+                                <button class="shop-list-buy-btn">구매</button>
+                            </div>
                         </div>
-                        <div class="shop-item" onclick="buyTickets(300)">
-                            <div class="shop-item-icon">🎫</div>
-                            <div class="shop-item-name">티켓 300개</div>
-                            <div class="shop-item-price">30.0 USDT</div>
-                            <button class="shop-buy-btn">구매하기</button>
+                        <div class="shop-list-item" onclick="buyTickets(300)">
+                            <div class="shop-list-item-left">
+                                <span class="shop-list-item-icon">🎫</span>
+                                <span class="shop-list-item-name">티켓 300개</span>
+                            </div>
+                            <div class="shop-list-item-right">
+                                <span class="shop-list-item-price">30.0 USDT</span>
+                                <button class="shop-list-buy-btn">구매</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1111,41 +1131,38 @@
                     </div>
                 </div>
 
-                <!-- 거래 기록 메뉴 -->
+                <!-- 결제기록 드롭다운 -->
                 <div class="wallet-section-title">거래 기록</div>
-                <div class="wallet-menu-card">
-                    <div class="wallet-menu-item" onclick="showPaymentHistory()">
-                        <span class="wallet-menu-icon">💳</span>
-                        <span class="wallet-menu-label">결제기록</span>
-                        <span class="wallet-menu-arrow">›</span>
+                <div class="wallet-dropdown" id="paymentDropdown">
+                    <div class="wallet-dropdown-header" onclick="toggleHistoryDropdown('payment')">
+                        <div class="wallet-dropdown-header-left">
+                            <span class="wallet-dropdown-icon">💳</span>
+                            <span class="wallet-dropdown-label">결제기록</span>
+                        </div>
+                        <span class="wallet-dropdown-arrow" id="paymentDropdownArrow">▼</span>
                     </div>
-                    <div class="wallet-menu-divider"></div>
-                    <div class="wallet-menu-item" onclick="showClaimHistory()">
-                        <span class="wallet-menu-icon">📥</span>
-                        <span class="wallet-menu-label">클레임기록</span>
-                        <span class="wallet-menu-arrow">›</span>
-                    </div>
-                </div>
-
-                <!-- 결제기록 서브 패널 -->
-                <div class="wallet-history-panel" id="paymentHistoryPanel" style="display:none;">
-                    <div class="wallet-history-header">
-                        <button class="wallet-history-back" onclick="hidePaymentHistory()">← 뒤로</button>
-                        <span class="wallet-history-title">💳 결제기록</span>
-                    </div>
-                    <div class="wallet-history-list" id="paymentHistoryList">
-                        <div class="wallet-history-empty">결제기록이 없습니다.</div>
+                    <div class="wallet-dropdown-body" id="paymentDropdownBody" style="display:none;">
+                        <div class="wallet-history-list" id="paymentHistoryList">
+                            <div class="wallet-history-empty">결제기록이 없습니다.</div>
+                        </div>
+                        <button class="wallet-load-more-btn" id="paymentLoadMoreBtn" style="display:none;" onclick="loadMoreHistory('payment')">더보기</button>
                     </div>
                 </div>
 
-                <!-- 클레임기록 서브 패널 -->
-                <div class="wallet-history-panel" id="claimHistoryPanel" style="display:none;">
-                    <div class="wallet-history-header">
-                        <button class="wallet-history-back" onclick="hideClaimHistory()">← 뒤로</button>
-                        <span class="wallet-history-title">📥 클레임기록</span>
+                <!-- 클레임기록 드롭다운 -->
+                <div class="wallet-dropdown" id="claimDropdown">
+                    <div class="wallet-dropdown-header" onclick="toggleHistoryDropdown('claim')">
+                        <div class="wallet-dropdown-header-left">
+                            <span class="wallet-dropdown-icon">📥</span>
+                            <span class="wallet-dropdown-label">클레임기록</span>
+                        </div>
+                        <span class="wallet-dropdown-arrow" id="claimDropdownArrow">▼</span>
                     </div>
-                    <div class="wallet-history-list" id="claimHistoryList">
-                        <div class="wallet-history-empty">클레임기록이 없습니다.</div>
+                    <div class="wallet-dropdown-body" id="claimDropdownBody" style="display:none;">
+                        <div class="wallet-history-list" id="claimHistoryList">
+                            <div class="wallet-history-empty">클레임기록이 없습니다.</div>
+                        </div>
+                        <button class="wallet-load-more-btn" id="claimLoadMoreBtn" style="display:none;" onclick="loadMoreHistory('claim')">더보기</button>
                     </div>
                 </div>
 
@@ -1155,18 +1172,6 @@
             <!-- 설정 화면 -->
             <div class="other-screen" id="settingsScreen">
                 <div class="screen-title">⚙️ 설정</div>
-
-                <!-- 프로필 섹션 -->
-                <div class="settings-section">
-                    <div class="settings-section-title">프로필</div>
-                    <div class="settings-profile-card" id="settingsProfileCard">
-                        <img class="settings-profile-img" id="settingsProfileImg" src="" alt="프로필" style="display:none;">
-                        <div class="settings-profile-info">
-                            <div class="settings-profile-name" id="settingsProfileName">-</div>
-                            <div class="settings-profile-status" id="settingsProfileStatus">LINE 계정 연동됨</div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- 알림 섹션 -->
                 <div class="settings-section">

@@ -357,85 +357,103 @@ function claimToken(tokenType) {
     showToast(typeName + ' ' + claimableAmount.toFixed(2) + ' 클레임 완료!');
 }
 
-// 결제기록 표시/숨기기
-function showPaymentHistory() {
-    const panel = document.getElementById('paymentHistoryPanel');
-    if (panel.style.display === 'none') {
-        panel.style.display = 'block';
-        // 목업 데이터 로드
-        loadPaymentHistory();
+// 거래 기록 드롭다운 토글
+const historyPageSize = 10;
+const historyDisplayed = { payment: 0, claim: 0 };
+
+// 목업 결제기록 데이터 (향후 API 연동)
+const mockPayments = [
+    { title: '티켓 5장 구매', date: '2025-01-15 14:30', amount: '-5,000원', type: 'negative' },
+    { title: '코인 1000개 구매', date: '2025-01-10 09:15', amount: '-3,000원', type: 'negative' },
+    { title: '프리미엄 패스', date: '2025-01-05 18:42', amount: '-9,900원', type: 'negative' },
+    { title: '티켓 10장 구매', date: '2024-12-28 11:00', amount: '-1,000원', type: 'negative' },
+    { title: '코인 500개 구매', date: '2024-12-20 15:30', amount: '-1,500원', type: 'negative' },
+    { title: '티켓 30장 구매', date: '2024-12-15 09:45', amount: '-3,000원', type: 'negative' },
+    { title: '코인 2000개 구매', date: '2024-12-10 14:20', amount: '-6,000원', type: 'negative' },
+    { title: '티켓 50장 구매', date: '2024-12-05 18:00', amount: '-5,000원', type: 'negative' },
+    { title: '프리미엄 패스 갱신', date: '2024-12-01 10:30', amount: '-9,900원', type: 'negative' },
+    { title: '티켓 100장 구매', date: '2024-11-25 13:15', amount: '-10,000원', type: 'negative' },
+    { title: '코인 300개 구매', date: '2024-11-20 16:45', amount: '-900원', type: 'negative' },
+    { title: '티켓 10장 구매', date: '2024-11-15 08:30', amount: '-1,000원', type: 'negative' }
+];
+
+// 목업 클레임기록 데이터 (향후 API 연동)
+const mockClaims = [
+    { title: 'USDT 클레임', date: '2025-01-14 11:20', amount: '+12.50 USDT', type: 'positive' },
+    { title: 'KAIA 클레임', date: '2025-01-12 16:05', amount: '+150.00 KAIA', type: 'positive' },
+    { title: 'USDT 클레임', date: '2025-01-08 08:30', amount: '+8.75 USDT', type: 'positive' },
+    { title: 'KAIA 클레임', date: '2024-12-30 14:10', amount: '+200.00 KAIA', type: 'positive' },
+    { title: 'USDT 클레임', date: '2024-12-25 09:00', amount: '+5.25 USDT', type: 'positive' },
+    { title: 'KAIA 클레임', date: '2024-12-18 17:30', amount: '+100.00 KAIA', type: 'positive' },
+    { title: 'USDT 클레임', date: '2024-12-12 11:45', amount: '+15.00 USDT', type: 'positive' },
+    { title: 'KAIA 클레임', date: '2024-12-05 08:15', amount: '+300.00 KAIA', type: 'positive' },
+    { title: 'USDT 클레임', date: '2024-11-28 13:00', amount: '+7.50 USDT', type: 'positive' },
+    { title: 'KAIA 클레임', date: '2024-11-22 16:20', amount: '+180.00 KAIA', type: 'positive' },
+    { title: 'USDT 클레임', date: '2024-11-15 10:30', amount: '+20.00 USDT', type: 'positive' },
+    { title: 'KAIA 클레임', date: '2024-11-10 14:50', amount: '+250.00 KAIA', type: 'positive' }
+];
+
+function toggleHistoryDropdown(type) {
+    const body = document.getElementById(type + 'DropdownBody');
+    const arrow = document.getElementById(type + 'DropdownArrow');
+
+    if (body.style.display === 'none') {
+        body.style.display = 'block';
+        arrow.classList.add('open');
+        // 최초 열 때 데이터 로드
+        if (historyDisplayed[type] === 0) {
+            loadHistoryItems(type, true);
+        }
     } else {
-        panel.style.display = 'none';
+        body.style.display = 'none';
+        arrow.classList.remove('open');
     }
 }
 
-function hidePaymentHistory() {
-    document.getElementById('paymentHistoryPanel').style.display = 'none';
-}
+function loadHistoryItems(type, reset) {
+    const data = type === 'payment' ? mockPayments : mockClaims;
+    const listEl = document.getElementById(type + 'HistoryList');
+    const loadMoreBtn = document.getElementById(type + 'LoadMoreBtn');
 
-function loadPaymentHistory() {
-    const list = document.getElementById('paymentHistoryList');
-    // 목업 결제기록 데이터
-    const mockPayments = [
-        { title: '티켓 5장 구매', date: '2025-01-15 14:30', amount: '-5,000원' },
-        { title: '코인 1000개 구매', date: '2025-01-10 09:15', amount: '-3,000원' },
-        { title: '프리미엄 패스', date: '2025-01-05 18:42', amount: '-9,900원' }
-    ];
+    if (reset) {
+        historyDisplayed[type] = 0;
+        listEl.innerHTML = '';
+    }
 
-    if (mockPayments.length === 0) {
-        list.innerHTML = '<div class="wallet-history-empty">결제기록이 없습니다.</div>';
+    if (data.length === 0) {
+        listEl.innerHTML = '<div class="wallet-history-empty">' +
+            (type === 'payment' ? '결제기록이 없습니다.' : '클레임기록이 없습니다.') + '</div>';
+        loadMoreBtn.style.display = 'none';
         return;
     }
 
-    list.innerHTML = mockPayments.map(p => `
+    const start = historyDisplayed[type];
+    const end = Math.min(start + historyPageSize, data.length);
+    const slice = data.slice(start, end);
+
+    const html = slice.map(item => `
         <div class="wallet-history-item">
             <div class="wallet-history-item-left">
-                <span class="wallet-history-item-title">${p.title}</span>
-                <span class="wallet-history-item-date">${p.date}</span>
+                <span class="wallet-history-item-title">${item.title}</span>
+                <span class="wallet-history-item-date">${item.date}</span>
             </div>
-            <span class="wallet-history-item-amount negative">${p.amount}</span>
+            <span class="wallet-history-item-amount ${item.type}">${item.amount}</span>
         </div>
     `).join('');
-}
 
-// 클레임기록 표시/숨기기
-function showClaimHistory() {
-    const panel = document.getElementById('claimHistoryPanel');
-    if (panel.style.display === 'none') {
-        panel.style.display = 'block';
-        loadClaimHistory();
+    listEl.insertAdjacentHTML('beforeend', html);
+    historyDisplayed[type] = end;
+
+    // 더보기 버튼 표시/숨기기
+    if (end < data.length) {
+        loadMoreBtn.style.display = 'block';
     } else {
-        panel.style.display = 'none';
+        loadMoreBtn.style.display = 'none';
     }
 }
 
-function hideClaimHistory() {
-    document.getElementById('claimHistoryPanel').style.display = 'none';
-}
-
-function loadClaimHistory() {
-    const list = document.getElementById('claimHistoryList');
-    // 목업 클레임기록 데이터
-    const mockClaims = [
-        { title: 'USDT 클레임', date: '2025-01-14 11:20', amount: '+12.50 USDT' },
-        { title: 'KAIA 클레임', date: '2025-01-12 16:05', amount: '+150.00 KAIA' },
-        { title: 'USDT 클레임', date: '2025-01-08 08:30', amount: '+8.75 USDT' }
-    ];
-
-    if (mockClaims.length === 0) {
-        list.innerHTML = '<div class="wallet-history-empty">클레임기록이 없습니다.</div>';
-        return;
-    }
-
-    list.innerHTML = mockClaims.map(c => `
-        <div class="wallet-history-item">
-            <div class="wallet-history-item-left">
-                <span class="wallet-history-item-title">${c.title}</span>
-                <span class="wallet-history-item-date">${c.date}</span>
-            </div>
-            <span class="wallet-history-item-amount positive">${c.amount}</span>
-        </div>
-    `).join('');
+function loadMoreHistory(type) {
+    loadHistoryItems(type, false);
 }
 
 // ========================================
@@ -729,22 +747,6 @@ function toggleSetting(key, value) {
     settings[key] = value;
     saveSettings(settings);
     console.log(`[설정] ${key}: ${value}`);
-}
-
-// 설정 화면 프로필 업데이트
-function updateSettingsProfile() {
-    if (!liffProfile) return;
-
-    const img = document.getElementById('settingsProfileImg');
-    const name = document.getElementById('settingsProfileName');
-    const status = document.getElementById('settingsProfileStatus');
-
-    if (liffProfile.pictureUrl) {
-        img.src = liffProfile.pictureUrl;
-        img.style.display = 'block';
-    }
-    name.textContent = liffProfile.displayName || '게스트';
-    status.textContent = LIFF_CONFIG.liffId ? 'LINE 계정 연동됨' : '개발 모드';
 }
 
 // 설정 화면 토글 초기화

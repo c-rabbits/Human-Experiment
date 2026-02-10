@@ -1523,62 +1523,79 @@ body {
     margin-bottom: 16px;
 }
 
-.shop-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.shop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.shop-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.shop-list-item:last-child {
+    border-bottom: none;
+}
+
+.shop-list-item:active {
+    background: #f8f8f8;
+}
+
+.shop-list-item-left {
+    display: flex;
+    align-items: center;
     gap: 12px;
 }
 
-.shop-item {
-    background: #fff;
-    border: 2px solid #e5e5e5;
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
+.shop-list-item-icon {
+    font-size: 28px;
+    flex-shrink: 0;
 }
 
-.shop-item:hover {
-    border-color: #000;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.shop-item-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
-}
-
-.shop-item-name {
-    font-size: 16px;
+.shop-list-item-name {
+    font-size: 15px;
     font-weight: 700;
-    color: #000;
-    margin-bottom: 8px;
+    color: #222;
 }
 
-.shop-item-price {
-    font-size: 20px;
+.shop-list-item-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shop-list-item-price {
+    font-size: 15px;
     font-weight: 700;
     color: #ff6b35;
-    margin-bottom: 12px;
 }
 
-.shop-buy-btn {
-    width: 100%;
-    padding: 10px;
+.shop-list-buy-btn {
+    padding: 6px 14px;
     background: #000;
     color: #fff;
     border: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.shop-buy-btn:hover {
+.shop-list-buy-btn:active {
     background: #333;
+    transform: scale(0.95);
 }
 
 /* 내 선택 보기 드롭다운 */
@@ -1998,45 +2015,6 @@ body {
 }
 
 /* 프로필 카드 */
-.settings-profile-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: #fff;
-    border: 2px solid #e5e5e5;
-    border-radius: 16px;
-    padding: 16px;
-}
-
-.settings-profile-img {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #e5e5e5;
-    flex-shrink: 0;
-}
-
-.settings-profile-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.settings-profile-name {
-    font-size: 17px;
-    font-weight: 700;
-    color: #000;
-    margin-bottom: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.settings-profile-status {
-    font-size: 13px;
-    color: #999;
-}
-
 /* 설정 항목 */
 .settings-item {
     display: flex;
@@ -2389,99 +2367,88 @@ body {
 }
 
 /* 거래 기록 메뉴 */
-.wallet-menu-card {
+/* 거래 기록 드롭다운 */
+/* 드롭다운 */
+.wallet-dropdown {
     background: #fff;
     border-radius: 14px;
-    overflow: hidden;
     margin-bottom: 10px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
 }
 
-.wallet-menu-item {
+.wallet-dropdown-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 14px 16px;
     cursor: pointer;
     transition: background 0.15s;
 }
 
-.wallet-menu-item:active {
+.wallet-dropdown-header:active {
     background: #f8f8f8;
 }
 
-.wallet-menu-icon {
-    font-size: 20px;
-    margin-right: 12px;
-    flex-shrink: 0;
-}
-
-.wallet-menu-label {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 600;
-    color: #222;
-}
-
-.wallet-menu-arrow {
-    font-size: 20px;
-    color: #ccc;
-    font-weight: 300;
-}
-
-.wallet-menu-divider {
-    height: 1px;
-    background: #f0f0f0;
-    margin: 0 16px;
-}
-
-/* 기록 서브 패널 */
-.wallet-history-panel {
-    background: #fff;
-    border-radius: 14px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    overflow: hidden;
-    animation: walletSlideDown 0.25s ease;
-}
-
-@keyframes walletSlideDown {
-    from { opacity: 0; max-height: 0; }
-    to { opacity: 1; max-height: 500px; }
-}
-
-.wallet-history-header {
+.wallet-dropdown-header-left {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid #f0f0f0;
-    gap: 8px;
+    gap: 10px;
 }
 
-.wallet-history-back {
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: #666;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-weight: 600;
+.wallet-dropdown-icon {
+    font-size: 20px;
 }
 
-.wallet-history-back:active {
-    background: #f0f0f0;
-}
-
-.wallet-history-title {
+.wallet-dropdown-label {
     font-size: 15px;
     font-weight: 700;
     color: #222;
 }
 
+.wallet-dropdown-arrow {
+    font-size: 12px;
+    color: #aaa;
+    transition: transform 0.25s;
+}
+
+.wallet-dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.wallet-dropdown-body {
+    border-top: 1px solid #f0f0f0;
+    animation: walletSlideDown 0.25s ease;
+}
+
+@keyframes walletSlideDown {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .wallet-history-list {
-    padding: 8px 0;
-    max-height: 300px;
-    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.wallet-load-more-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 4px 16px 12px;
+    padding: 10px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.wallet-load-more-btn:active {
+    background: #eee;
+    transform: scale(0.98);
 }
 
 .wallet-history-empty {
