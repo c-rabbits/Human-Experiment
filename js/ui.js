@@ -49,7 +49,7 @@ function initBannerSlider() {
     bannerVisualIndex = 1;
     track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
 
-    // 루프용 transition 종료 처리
+    // 루프용 transition 종료 처리 (transform만 처리해 중복 방지)
     track.addEventListener('transitionend', handleBannerTransitionEnd);
 
     // 터치 이벤트
@@ -213,30 +213,28 @@ function updateBannerPosition() {
 }
 
 // 배너 무한 루프 처리를 위한 transition 종료 핸들러
-function handleBannerTransitionEnd() {
+function handleBannerTransitionEnd(e) {
+    if (e && e.propertyName && e.propertyName !== 'transform') return;
     const track = document.getElementById('bannerTrack');
     if (!track) return;
 
-    // transition 없이 위치 보정하기 위해 dragging 클래스를 잠시 사용
+    // 점프 시 transition이 적용되지 않도록: 먼저 transition 제거 → reflow → transform 변경 → 다음 프레임에 transition 복원
     if (bannerVisualIndex === 0) {
-        // 왼쪽 끝 클론에 도달 → 마지막 실제 배너로 점프
-        track.classList.add('dragging'); // CSS에서 transition 제거
+        // 왼쪽 끝 클론에 도달 → 마지막 실제 배너 위치로 순간 이동
+        track.classList.add('dragging');
         bannerVisualIndex = bannerCount;
         currentBannerIndex = bannerCount - 1;
+        void track.offsetHeight; // reflow로 transition:none 적용 보장
         track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
-        // 다음 프레임에 transition 복원
-        requestAnimationFrame(() => {
-            track.classList.remove('dragging');
-        });
+        requestAnimationFrame(() => { track.classList.remove('dragging'); });
     } else if (bannerVisualIndex === bannerCount + 1) {
-        // 오른쪽 끝 클론에 도달 → 첫 번째 실제 배너로 점프
+        // 오른쪽 끝 클론(첫번째와 동일 이미지)에 도달 → 첫 번째 실제 배너 위치로 순간 이동 (화면은 그대로, 루프만 리셋)
         track.classList.add('dragging');
         bannerVisualIndex = 1;
         currentBannerIndex = 0;
+        void track.offsetHeight; // reflow로 transition:none 적용 보장
         track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
-        requestAnimationFrame(() => {
-            track.classList.remove('dragging');
-        });
+        requestAnimationFrame(() => { track.classList.remove('dragging'); });
     }
 }
 
