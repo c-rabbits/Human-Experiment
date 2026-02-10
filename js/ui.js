@@ -222,6 +222,7 @@ function handleBannerTransitionEnd() {
         // 왼쪽 끝 클론에 도달 → 마지막 실제 배너로 점프
         track.classList.add('dragging'); // CSS에서 transition 제거
         bannerVisualIndex = bannerCount;
+        currentBannerIndex = bannerCount - 1;
         track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
         // 다음 프레임에 transition 복원
         requestAnimationFrame(() => {
@@ -231,6 +232,7 @@ function handleBannerTransitionEnd() {
         // 오른쪽 끝 클론에 도달 → 첫 번째 실제 배너로 점프
         track.classList.add('dragging');
         bannerVisualIndex = 1;
+        currentBannerIndex = 0;
         track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
         requestAnimationFrame(() => {
             track.classList.remove('dragging');
