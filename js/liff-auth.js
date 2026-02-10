@@ -51,6 +51,10 @@ async function initLIFF() {
         console.log('[LIFF] 프로필:', liffProfile.displayName);
 
         isLIFFInitialized = true;
+
+        // LIFF 초기화 완료 후 → Kaia SDK 초기화
+        await initKaiaSDK();
+
         hideLiffLoading();
         await initApp();
 

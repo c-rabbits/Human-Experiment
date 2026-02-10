@@ -334,7 +334,7 @@ function fallbackCopyToClipboard(text, label) {
 }
 
 // 토큰 클레임
-function claimToken(tokenType) {
+async function claimToken(tokenType) {
     const typeName = tokenType.toUpperCase();
     const claimableEl = document.getElementById(
         tokenType === 'usdt' ? 'walletUSDTClaimable' : 'walletKAIAClaimable'
@@ -349,12 +349,28 @@ function claimToken(tokenType) {
         return;
     }
 
-    // 목업: 잔액에 합산 + 클레임 가능 금액 0으로
-    const currentBalance = parseFloat(balanceEl.textContent);
-    balanceEl.textContent = (currentBalance + claimableAmount).toFixed(2);
-    claimableEl.textContent = '0.00';
+    // 지갑 미연결 시 연결 유도
+    if (!isWalletConnected()) {
+        showToast('먼저 지갑을 연결해주세요');
+        const section = document.getElementById('walletConnectArea');
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
 
-    showToast(typeName + ' ' + claimableAmount.toFixed(2) + ' 클레임 완료!');
+    // 온체인 클레임 트랜잭션 실행
+    const success = await claimTokenOnChain(tokenType);
+    if (success) {
+        // UI 업데이트: 잔액 합산 + 클레임 가능 금액 0
+        const currentBalance = parseFloat(balanceEl.textContent);
+        balanceEl.textContent = (currentBalance + claimableAmount).toFixed(2);
+        claimableEl.textContent = '0.00';
+        showToast(typeName + ' ' + claimableAmount.toFixed(2) + ' 클레임 완료!');
+
+        // 온체인 잔액 새로고침 (약간의 딜레이 후)
+        setTimeout(function() { refreshTokenBalances(); }, 3000);
+    }
 }
 
 // 거래 기록 드롭다운 토글

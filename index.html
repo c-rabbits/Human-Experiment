@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>대중적 인간 - Popular Human</title>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://static.kaiawallet.io/js/dapp-portal-sdk.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -1082,14 +1083,26 @@
                     </div>
                 </div>
 
-                <!-- 지갑 주소 섹션 -->
+                <!-- Kaia 지갑 연결 섹션 -->
                 <div class="wallet-info-card">
-                    <div class="wallet-info-label">LINE 디앱 지갑주소</div>
-                    <div class="wallet-info-row">
-                        <span class="wallet-info-value wallet-address" id="walletAddress">-</span>
-                        <button class="wallet-copy-btn" onclick="copyToClipboard(document.getElementById('walletAddress').dataset.full, '지갑주소')">
-                            📋 복사
+                    <div class="wallet-info-label">
+                        Kaia 지갑
+                        <span class="wallet-connection-badge" id="walletConnectionBadge">미연결</span>
+                    </div>
+                    <!-- 미연결 상태: 연결 버튼 -->
+                    <div class="wallet-connect-area" id="walletConnectArea">
+                        <button class="wallet-connect-btn" onclick="connectKaiaWallet()">
+                            🔗 지갑 연결하기
                         </button>
+                    </div>
+                    <!-- 연결 상태: 주소 표시 -->
+                    <div class="wallet-address-area" id="walletAddressArea" style="display:none;">
+                        <div class="wallet-info-row">
+                            <span class="wallet-info-value wallet-address" id="walletAddress">-</span>
+                            <button class="wallet-copy-btn" onclick="copyToClipboard(document.getElementById('walletAddress').dataset.full, '지갑주소')">
+                                📋 복사
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1360,6 +1373,7 @@
     <!-- JavaScript 모듈 (의존성 순서) -->
     <script src="js/data.js"></script>
     <script src="js/liff-auth.js"></script>
+    <script src="js/kaia-wallet.js"></script>
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/ad-reward.js"></script>
