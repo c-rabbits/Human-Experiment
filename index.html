@@ -25,10 +25,6 @@
             <div class="home-screen active" id="homeScreen">
                 <!-- 상단 헤더 -->
                 <div class="top-header">
-                    <div class="user-profile-area" id="userProfileArea">
-                        <img class="user-profile-img" id="userProfileImg" src="" alt="프로필" style="display:none;">
-                        <span class="user-profile-name" id="userProfileName"></span>
-                    </div>
                     <div class="user-stats">
                         <div class="stat-item">
                             <span class="stat-icon">💰</span>
@@ -1098,7 +1094,9 @@
 
                 <!-- 프로필 카드 -->
                 <div class="wallet-profile-card">
-                    <img class="wallet-profile-img" id="walletProfileImg" src="" alt="프로필" style="display:none;">
+                    <div class="wallet-profile-avatar">
+                        <img class="wallet-profile-img" id="walletProfileImg" src="" alt="" role="presentation">
+                    </div>
                     <div class="wallet-profile-info">
                         <div class="wallet-profile-name" id="walletProfileName">-</div>
                         <div class="wallet-profile-badge">
@@ -1127,7 +1125,7 @@
                     <!-- 미연결 상태: 연결 버튼 -->
                     <div class="wallet-connect-area" id="walletConnectArea">
                         <button class="wallet-connect-btn" onclick="connectKaiaWallet()">
-                            🔗 지갑 연결하기
+                            지갑 연결하기
                         </button>
                     </div>
                     <!-- 연결 상태: 주소 표시 -->

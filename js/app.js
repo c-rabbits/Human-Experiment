@@ -19,20 +19,6 @@ let attemptCount = 0; // 도전 횟수 추적
 async function initApp() {
     console.log('앱 초기화 시작...');
 
-    // LIFF 프로필을 상단 헤더에 반영
-    if (liffProfile) {
-        const profileImg = document.getElementById('userProfileImg');
-        const profileName = document.getElementById('userProfileName');
-
-        if (liffProfile.pictureUrl) {
-            profileImg.src = liffProfile.pictureUrl;
-            profileImg.style.display = 'block';
-        } else {
-            profileImg.style.display = 'none';
-        }
-        profileName.textContent = liffProfile.displayName || '';
-    }
-
     // 유저 정보 로드
     const userInfo = await API.getUserInfo();
     console.log('유저 정보:', userInfo);

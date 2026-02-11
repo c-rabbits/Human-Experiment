@@ -360,15 +360,23 @@ function updateUserStats(data) {
 
 // 지갑 페이지 업데이트
 function updateWalletPage(data) {
-    // 프로필 카드
+    // 프로필 카드 (아바타 원 + 이름)
     const walletImg = document.getElementById('walletProfileImg');
     const walletName = document.getElementById('walletProfileName');
+    const avatarWrap = walletImg && walletImg.closest('.wallet-profile-avatar');
 
-    if (data.pictureUrl) {
-        walletImg.src = data.pictureUrl;
-        walletImg.style.display = 'block';
+    if (walletImg) {
+        if (data.pictureUrl) {
+            walletImg.src = data.pictureUrl;
+            walletImg.style.display = 'block';
+            if (avatarWrap) avatarWrap.classList.remove('no-image');
+        } else {
+            walletImg.removeAttribute('src');
+            walletImg.style.display = 'none';
+            if (avatarWrap) avatarWrap.classList.add('no-image');
+        }
     }
-    walletName.textContent = data.displayName || data.characterName || '-';
+    if (walletName) walletName.textContent = data.displayName || data.characterName || '-';
 
     // UID
     const walletUID = document.getElementById('walletUID');
