@@ -9,6 +9,10 @@ const LIFF_CONFIG = {
     lineOfficialAccountId: '811vdwss',
 };
 
+// 스플래시 최소 표시 시간 (ms) — 1초 미만이면 남은 시간만큼 대기 후 숨김
+const SPLASH_MIN_MS = 1000;
+const splashShownAt = Date.now();
+
 // LIFF에서 가져온 유저 프로필 저장
 let liffProfile = null;
 let isLIFFInitialized = false;
@@ -81,13 +85,22 @@ async function initLIFF() {
     }
 }
 
-// 로딩 화면 숨기기
+// 로딩 화면 숨기기 (최소 SPLASH_MIN_MS 경과 후 숨김)
 function hideLiffLoading() {
-    const loadingScreen = document.getElementById('liffLoadingScreen');
-    loadingScreen.classList.add('hidden');
-    setTimeout(() => {
-        loadingScreen.style.display = 'none';
-    }, 400);
+    const elapsed = Date.now() - splashShownAt;
+    const delay = Math.max(0, SPLASH_MIN_MS - elapsed);
+
+    const doHide = () => {
+        const loadingScreen = document.getElementById('liffLoadingScreen');
+        if (!loadingScreen) return;
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 400);
+    };
+
+    if (delay > 0) setTimeout(doHide, delay);
+    else doHide();
 }
 
 // LIFF Access Token 가져오기 (API 호출용)
