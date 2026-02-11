@@ -1766,16 +1766,36 @@ body {
     gap: 14px;
 }
 
+/* 카드: 두 줄 레이아웃, 높이·비율 최적화 (상단 45% : 하단 55%) */
 .shop-list-item {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-between;
-    padding: 16px 18px;
+    min-height: 100px;
+    padding: 18px 20px;
     background: #fff;
     border-radius: 14px;
     border: 1px solid #c4c4c4;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    transition: background 0.15s, box-shadow 0.2s;
+    transition: box-shadow 0.2s;
+}
+
+.shop-list-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shop-list-item-row-top {
+    flex: 0 0 auto;
+    min-height: 36px;
+}
+
+.shop-list-item-row-bottom {
+    flex: 0 0 auto;
+    padding-top: 14px;
+    border-top: 1px solid #eee;
+    margin-top: 2px;
 }
 
 .shop-list-item-left {
@@ -1790,19 +1810,13 @@ body {
 }
 
 .shop-list-item-name {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: #222;
 }
 
-.shop-list-item-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 .shop-list-item-price {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: #ff6b35;
 }
@@ -1810,7 +1824,9 @@ body {
 .shop-list-buy-btns {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
 }
 
 .shop-list-buy-btn {
