@@ -1830,10 +1830,10 @@ body {
 }
 
 .shop-list-buy-btn {
-    padding: 6px 12px;
+    padding: 10px 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 12px;
+    border-radius: 10px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
@@ -1851,13 +1851,12 @@ body {
 }
 
 .shop-list-buy-btn-kaia {
-    background: transparent;
-    color: #E5BD20;
-    border: 2px solid #E5BD20;
+    background: #BFF009;
+    color: #000;
 }
 
 .shop-list-buy-btn-kaia:active {
-    background: rgba(229, 189, 32, 0.15);
+    opacity: 0.9;
     transform: scale(0.95);
 }
 
