@@ -5,6 +5,8 @@
 const LIFF_CONFIG = {
     // TODO: LINE Developers Console에서 발급받은 LIFF ID 입력
     liffId: '2009089916-d5ymB1Rz',
+    // 문의하기: LINE 공식 계정 ID (LINE Developers / 공식계정 관리자센터에서 확인, 예: 'abc123')
+    lineOfficialAccountId: '811vdwss',
 };
 
 // LIFF에서 가져온 유저 프로필 저장

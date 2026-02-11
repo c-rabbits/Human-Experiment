@@ -1207,8 +1207,17 @@ function goBackToSettings() {
     document.querySelector('.bottom-nav').classList.remove('hidden');
 }
 
-// 문의하기
+// 문의하기: LINE 공식 계정 1:1 채팅
 function openInquiry() {
-    // TODO: 실제 문의 채널로 변경 (카카오톡 채널, 이메일 등)
-    showToast('문의 채널 준비 중입니다');
+    const oaId = (LIFF_CONFIG && LIFF_CONFIG.lineOfficialAccountId) ? LIFF_CONFIG.lineOfficialAccountId.trim() : '';
+    if (!oaId) {
+        showToast('문의 채널이 설정되지 않았습니다. lineOfficialAccountId를 입력해주세요.');
+        return;
+    }
+    const url = 'https://line.me/R/ti/p/' + (oaId.startsWith('@') ? oaId : '@' + oaId);
+    if (typeof liff !== 'undefined' && liff.isInClient()) {
+        liff.openWindow({ url: url });
+    } else {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
 }
