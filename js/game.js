@@ -571,9 +571,12 @@ async function confirmNotification() {
 // ========================================
 
 let pendingShopTicketAmount = 0;
+let pendingShopPaymentMethod = 'line'; // 'line' | 'kaia'
 
-function buyTickets(amount) {
+function buyTickets(amount, method) {
+    method = method || 'line';
     pendingShopTicketAmount = amount;
+    pendingShopPaymentMethod = method;
     const price = (amount * 0.1).toFixed(1);
     document.getElementById('shopPurchaseAmount').textContent = '🎫 ' + amount + '개';
     document.getElementById('shopPurchasePrice').textContent = price + ' USDT';
@@ -583,18 +586,28 @@ function buyTickets(amount) {
 function closeShopPurchasePopup() {
     document.getElementById('shopPurchasePopup').classList.remove('active');
     pendingShopTicketAmount = 0;
+    pendingShopPaymentMethod = 'line';
 }
 
 function confirmShopPurchase() {
     const amount = pendingShopTicketAmount;
+    const method = pendingShopPaymentMethod;
     closeShopPurchasePopup();
     if (!amount) return;
 
-    // TODO: 실제 결제 로직 구현
-    if (typeof showToast === 'function') {
-        showToast('결제 기능은 준비 중입니다.');
+    // TODO: method에 따라 LINE Pay / KAIA 실제 결제 연동
+    if (method === 'kaia') {
+        if (typeof showToast === 'function') {
+            showToast('KAIA 결제 기능은 준비 중입니다.');
+        } else {
+            alert('KAIA 결제 기능은 준비 중입니다.');
+        }
     } else {
-        alert('결제 기능은 준비 중입니다.');
+        if (typeof showToast === 'function') {
+            showToast('LINE Pay 결제 기능은 준비 중입니다.');
+        } else {
+            alert('LINE Pay 결제 기능은 준비 중입니다.');
+        }
     }
 
     // 결제 성공 시:

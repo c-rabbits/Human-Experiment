@@ -1775,14 +1775,7 @@ body {
     border-radius: 14px;
     border: 1px solid #c4c4c4;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    cursor: pointer;
     transition: background 0.15s, box-shadow 0.2s;
-}
-
-.shop-list-item:active {
-    background: #f8f8f8;
-    border-color: #b0b0b0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .shop-list-item-left {
@@ -1814,21 +1807,41 @@ body {
     color: #ff6b35;
 }
 
+.shop-list-buy-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .shop-list-buy-btn {
-    padding: 6px 14px;
-    background: #000;
-    color: #fff;
+    padding: 6px 12px;
     border: none;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
 }
 
-.shop-list-buy-btn:active {
+.shop-list-buy-btn-line {
+    background: #000;
+    color: #fff;
+}
+
+.shop-list-buy-btn-line:active {
     background: #333;
+    transform: scale(0.95);
+}
+
+.shop-list-buy-btn-kaia {
+    background: transparent;
+    color: #E5BD20;
+    border: 2px solid #E5BD20;
+}
+
+.shop-list-buy-btn-kaia:active {
+    background: rgba(229, 189, 32, 0.15);
     transform: scale(0.95);
 }
 
@@ -2385,7 +2398,7 @@ body {
 }
 
 .settings-toggle input:checked + .settings-toggle-slider {
-    background: #f18709;
+    background: #E5BD20;
 }
 
 .settings-toggle input:checked + .settings-toggle-slider::before {
@@ -2490,8 +2503,8 @@ body {
     }
 
     .time-picker-block:focus-within {
-        border-color: #f18709;
-        box-shadow: 0 0 0 3px rgba(241, 135, 9, 0.15);
+        border-color: #E5BD20;
+        box-shadow: 0 0 0 3px rgba(229, 189, 32, 0.15);
     }
 
     .time-picker-label {
@@ -2528,13 +2541,13 @@ body {
     }
 
     .time-picker-select:hover {
-        border-color: #f18709;
+        border-color: #E5BD20;
         background-color: #fff;
     }
 
     .time-picker-select:focus {
         outline: none;
-        border-color: #f18709;
+        border-color: #E5BD20;
         background-color: #fff;
     }
 
@@ -2658,7 +2671,7 @@ body {
     width: 100%;
     padding: 14px 0;
     background: #000;
-    color: #f18709; /* rgb(241, 135, 9) */
+    color: #E5BD20;
     border: none;
     border-radius: 10px;
     font-size: 15px;
@@ -2800,7 +2813,7 @@ body {
 }
 
 .wallet-claimable {
-    color: #f18709;
+    color: #E5BD20;
     margin-left: 2px;
 }
 
