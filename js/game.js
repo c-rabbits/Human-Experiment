@@ -539,18 +539,36 @@ async function confirmNotification() {
 // 티켓 구매
 // ========================================
 
+let pendingShopTicketAmount = 0;
+
 function buyTickets(amount) {
+    pendingShopTicketAmount = amount;
     const price = (amount * 0.1).toFixed(1);
-    const confirmPurchase = confirm(`티켓 ${amount}개를 ${price} USDT에 구매하시겠습니까?`);
+    document.getElementById('shopPurchaseAmount').textContent = '🎫 ' + amount + '개';
+    document.getElementById('shopPurchasePrice').textContent = price + ' USDT';
+    document.getElementById('shopPurchasePopup').classList.add('active');
+}
 
-    if (confirmPurchase) {
-        // TODO: 실제 결제 로직 구현
+function closeShopPurchasePopup() {
+    document.getElementById('shopPurchasePopup').classList.remove('active');
+    pendingShopTicketAmount = 0;
+}
+
+function confirmShopPurchase() {
+    const amount = pendingShopTicketAmount;
+    closeShopPurchasePopup();
+    if (!amount) return;
+
+    // TODO: 실제 결제 로직 구현
+    if (typeof showToast === 'function') {
+        showToast('결제 기능은 준비 중입니다.');
+    } else {
         alert('결제 기능은 준비 중입니다.');
-
-        // 결제 성공 시:
-        // const currentTickets = parseInt(document.getElementById('ticketCount').textContent);
-        // updateUserStats({ tickets: currentTickets + amount });
     }
+
+    // 결제 성공 시:
+    // const currentTickets = parseInt(document.getElementById('ticketCount').textContent);
+    // updateUserStats({ tickets: currentTickets + amount });
 }
 
 // ========================================

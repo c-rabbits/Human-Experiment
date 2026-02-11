@@ -502,6 +502,27 @@
                 </div>
             </div>
 
+            <!-- 티켓 구매 확인 팝업 (게임 시작 팝업과 동일 스타일) -->
+            <div class="game-start-popup" id="shopPurchasePopup">
+                <div class="game-start-popup-content">
+                    <div class="game-start-popup-title">티켓을 구매할까요?</div>
+                    <div class="game-start-info">
+                        <div class="game-start-info-item">
+                            <span class="game-start-info-label">티켓 수량</span>
+                            <span class="game-start-info-value" id="shopPurchaseAmount">🎫 10개</span>
+                        </div>
+                        <div class="game-start-info-item">
+                            <span class="game-start-info-label">결제 금액</span>
+                            <span class="game-start-info-value" id="shopPurchasePrice">1.0 USDT</span>
+                        </div>
+                    </div>
+                    <div class="game-start-buttons">
+                        <button class="game-start-btn game-start-btn-cancel" onclick="closeShopPurchasePopup()">취소</button>
+                        <button class="game-start-btn game-start-btn-confirm" onclick="confirmShopPurchase()">구매하기</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 상점 화면 -->
             <div class="other-screen" id="shopScreen">
                 <div class="screen-title">🛍 상점</div>
