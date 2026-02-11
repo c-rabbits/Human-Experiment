@@ -1539,14 +1539,16 @@ body {
     padding: 16px 18px;
     background: #fff;
     border-radius: 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid #c4c4c4;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     cursor: pointer;
     transition: background 0.15s, box-shadow 0.2s;
 }
 
 .shop-list-item:active {
     background: #f8f8f8;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-color: #b0b0b0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .shop-list-item-left {
