@@ -765,6 +765,10 @@ function switchScreen(screenName) {
     document.getElementById('rankingScreen').classList.remove('active');
     document.getElementById('profileScreen').classList.remove('active');
     document.getElementById('settingsScreen').classList.remove('active');
+    const termsEl = document.getElementById('termsScreen');
+    const privacyEl = document.getElementById('privacyScreen');
+    if (termsEl) termsEl.classList.remove('active');
+    if (privacyEl) privacyEl.classList.remove('active');
 
     // 선택된 화면 표시
     const screenMap = {
@@ -1183,14 +1187,24 @@ function logoutLIFF() {
 
 // 이용약관
 function openTerms() {
-    // TODO: 실제 약관 URL로 변경
-    showToast('이용약관 페이지 준비 중입니다');
+    document.getElementById('settingsScreen').classList.remove('active');
+    document.getElementById('termsScreen').classList.add('active');
+    document.querySelector('.bottom-nav').classList.add('hidden');
 }
 
 // 개인정보처리방침
 function openPrivacy() {
-    // TODO: 실제 개인정보처리방침 URL로 변경
-    showToast('개인정보처리방침 페이지 준비 중입니다');
+    document.getElementById('settingsScreen').classList.remove('active');
+    document.getElementById('privacyScreen').classList.add('active');
+    document.querySelector('.bottom-nav').classList.add('hidden');
+}
+
+// 약관/개인정보처리방침에서 설정으로 돌아가기
+function goBackToSettings() {
+    document.getElementById('termsScreen').classList.remove('active');
+    document.getElementById('privacyScreen').classList.remove('active');
+    document.getElementById('settingsScreen').classList.add('active');
+    document.querySelector('.bottom-nav').classList.remove('hidden');
 }
 
 // 문의하기

@@ -40,6 +40,7 @@ body {
 .game-container {
     width: 100%;
     max-width: 480px;
+    min-width: 0; /* flex 자식이 넘치지 않도록 */
     height: 100vh;
     background: #fff;
     position: relative;
@@ -47,6 +48,7 @@ body {
     box-shadow: 0 0 50px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
 }
 
 /* 상단 유저 정보 바 */
@@ -129,10 +131,12 @@ body {
     padding-bottom: 0;
 }
 
-/* 하단 고정 메뉴 - 다크 테마 */
+/* 하단 고정 메뉴 - 다크 테마 (가로폭 앱과 동일하게 고정) */
 .bottom-nav {
     position: fixed;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
     max-width: 480px;
     height: 70px;
@@ -147,7 +151,7 @@ body {
 }
 
 .bottom-nav.hidden {
-    transform: translateY(100%);
+    transform: translateX(-50%) translateY(100%);
     opacity: 0;
     pointer-events: none;
 }
@@ -1342,6 +1346,60 @@ body {
     display: block;
 }
 
+/* 이용약관 / 개인정보처리방침 공통 */
+.legal-screen {
+    padding-top: 12px;
+}
+
+.legal-screen-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.legal-screen-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 12px;
+    font-size: 28px;
+    line-height: 1;
+    color: #333;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.legal-screen-back:hover {
+    background: #e5e5e5;
+}
+
+.legal-screen-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #000;
+    margin: 0;
+}
+
+.legal-screen-body {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.legal-screen-placeholder {
+    color: #999;
+    font-size: 14px;
+    margin: 0;
+}
+
 .screen-title {
     font-size: 24px;
     font-weight: 900;
@@ -2239,6 +2297,8 @@ body {
     margin-top: 6px;
     padding-left: 40px;
     flex-wrap: nowrap;
+    flex: 0 1 auto;
+    max-width: 100%;
 }
 
 @media (max-width: 380px) {
@@ -2252,7 +2312,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    flex: 1;
+    flex: 0 1 auto;
     min-width: 0;
 }
 
@@ -2295,13 +2355,13 @@ body {
         display: none;
     }
 
-    .settings-time-custom {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex: 1;
-        flex-wrap: nowrap;
-    }
+.settings-time-custom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 1 auto;
+    flex-wrap: nowrap;
+}
 
     .time-picker-block {
         display: flex;
