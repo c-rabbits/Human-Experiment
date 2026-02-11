@@ -592,8 +592,10 @@
                 <div class="trend-section">
                     <div class="trend-section-subtitle">이벤트가 종료된 시나리오의 선택 트렌드입니다</div>
 
-                    <!-- 시나리오별 트렌드 -->
-                    <div class="trend-scenario-card">
+                    <!-- 2025.02.01 진행 -->
+                    <div class="trend-date-group" data-date="2025-02-01">
+                        <div class="trend-date-header">2025년 2월 1일</div>
+                        <div class="trend-scenario-card">
                         <div class="trend-banner" style="background-image: url('wedding_banner.png');">
                             <div class="trend-banner-overlay">
                                 <div class="trend-scenario-title">친구의 결혼식</div>
@@ -609,6 +611,10 @@
                                 <span class="trend-stat-label">정답자</span>
                                 <span class="trend-stat-value">124명</span>
                             </div>
+                        </div>
+                        <div class="trend-my-result" id="trendMyResultWedding" data-scenario="wedding">
+                            <span class="trend-my-result-label">내 결과</span>
+                            <span class="trend-my-result-value" id="trendMyResultValueWedding">—</span>
                         </div>
 
                         <!-- 문제별 선택 트렌드 드롭다운 -->
@@ -828,10 +834,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        </div>
 
-                    <!-- 두 번째 시나리오 -->
-                    <div class="trend-scenario-card">
+                        <!-- 두 번째 시나리오 (같은 날짜) -->
+                        <div class="trend-scenario-card">
                         <div class="trend-banner" style="background-image: url('blind_date_banner.png');">
                             <div class="trend-banner-overlay">
                                 <div class="trend-scenario-title">처음 하는 소개팅</div>
@@ -847,6 +853,10 @@
                                 <span class="trend-stat-label">정답자</span>
                                 <span class="trend-stat-value">76명</span>
                             </div>
+                        </div>
+                        <div class="trend-my-result" id="trendMyResultBlinddate" data-scenario="blind-date">
+                            <span class="trend-my-result-label">내 결과</span>
+                            <span class="trend-my-result-value" id="trendMyResultValueBlinddate">—</span>
                         </div>
 
                         <div class="trend-dropdown-header" onclick="toggleTrendDropdown('blinddate')">
@@ -1064,6 +1074,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

@@ -743,6 +743,28 @@ function copyInviteLink() {
 // 화면 전환
 // ========================================
 
+/** 트렌드 보드 각 시나리오별 "내 결과" 표시 갱신 */
+function updateTrendMyResults() {
+    const idByScenario = { 'wedding': 'Wedding', 'blind-date': 'Blinddate' };
+    try {
+        const saved = JSON.parse(localStorage.getItem('ph_trend_my_results') || '{}');
+        Object.keys(idByScenario).forEach(function (scenarioId) {
+            const el = document.getElementById('trendMyResultValue' + idByScenario[scenarioId]);
+            if (!el) return;
+            const data = saved[scenarioId];
+            if (!data) {
+                el.textContent = '—';
+                el.classList.remove('trend-my-result-win', 'trend-my-result-lose');
+                return;
+            }
+            const status = data.isWinner ? '성공' : '실패';
+            el.textContent = status + ' · ' + data.correctCount + ' / ' + data.totalQuestions + ' 정답';
+            el.classList.remove('trend-my-result-win', 'trend-my-result-lose');
+            el.classList.add(data.isWinner ? 'trend-my-result-win' : 'trend-my-result-lose');
+        });
+    } catch (e) { console.warn('updateTrendMyResults', e); }
+}
+
 function switchScreen(screenName) {
     // 모든 네비게이션 아이템 비활성화
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -770,6 +792,10 @@ function switchScreen(screenName) {
     const targetScreen = screenMap[screenName];
     if (targetScreen) {
         document.getElementById(targetScreen).classList.add('active');
+    }
+
+    if (screenName === 'ranking') {
+        updateTrendMyResults();
     }
 
     // 네비게이션 활성화 (이벤트 타겟 찾기)

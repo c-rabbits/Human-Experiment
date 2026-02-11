@@ -3,6 +3,7 @@
 // ========================================
 
 let currentScenario = null;
+let currentScenarioId = null; // 트렌드 보드 "내 결과" 저장용
 let currentQuestion = 0;
 let userAnswers = [];
 let correctCount = 0;

@@ -71,6 +71,7 @@ async function confirmGameStart() {
     console.log('scenarios[scenarioId]:', scenarios[scenarioId]);
 
     currentScenario = scenarios[scenarioId];
+    currentScenarioId = scenarioId;
 
     if (!currentScenario) {
         console.error('시나리오를 찾을 수 없습니다:', scenarioId);
@@ -417,6 +418,8 @@ async function showFinalResult(result) {
         document.getElementById('winnerContent').style.display = 'block';
         document.getElementById('loserContent').style.display = 'none';
 
+        saveTrendMyResult(true, result.correctCount, result.totalQuestions);
+
         // 유저 스탯 업데이트
         const currentCoins = parseInt(document.getElementById('coinCount').textContent);
         const currentPoints = parseInt(document.getElementById('rewardPoints').textContent);
@@ -456,6 +459,8 @@ async function showFinalResult(result) {
 
         document.getElementById('questionResultsLose').innerHTML = resultsHtml;
 
+        saveTrendMyResult(false, result.correctCount, result.totalQuestions);
+
         document.getElementById('pendingContent').style.display = 'none';
         document.getElementById('winnerContent').style.display = 'none';
         document.getElementById('loserContent').style.display = 'block';
@@ -466,6 +471,16 @@ async function showFinalResult(result) {
             rewardPoints: currentPoints + earnedPoints
         });
     }
+}
+
+// 트렌드 보드 "내 결과" 저장 (로컬)
+function saveTrendMyResult(isWinner, correctCount, totalQuestions) {
+    if (!currentScenarioId) return;
+    try {
+        const saved = JSON.parse(localStorage.getItem('ph_trend_my_results') || '{}');
+        saved[currentScenarioId] = { isWinner, correctCount, totalQuestions };
+        localStorage.setItem('ph_trend_my_results', JSON.stringify(saved));
+    } catch (e) { console.warn('saveTrendMyResult', e); }
 }
 
 // ========================================
