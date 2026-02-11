@@ -47,6 +47,9 @@ async function initApp() {
 
     // 친구 초대 현황 업데이트
     updateInviteStats();
+
+    // 상점 가격 표기 (엔/USDT 둘 다)
+    if (typeof updateShopListPrices === 'function') updateShopListPrices();
 }
 
 // ========================================

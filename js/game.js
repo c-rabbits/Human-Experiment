@@ -573,14 +573,32 @@ async function confirmNotification() {
 let pendingShopTicketAmount = 0;
 let pendingShopPaymentMethod = 'line'; // 'line' | 'kaia'
 
+// 일본 서비스: 엔화(JPY) 기준. LINE Pay=JPY, Kaia=USDT. 환율은 추후 서버/설정으로 교체 가능
+const TICKET_PRICE_USDT = 0.1;           // 티켓 1개당 USDT
+const USDT_TO_JPY = 150;                 // 1 USDT = N円 (표시·LINE Pay 결제용)
+
+function formatPriceJpyUsdt(amount) {
+    const priceUsdt = amount * TICKET_PRICE_USDT;
+    const priceJpy = Math.round(priceUsdt * USDT_TO_JPY);
+    return '¥' + priceJpy.toLocaleString('ja-JP') + ' / ' + priceUsdt.toFixed(1) + ' USDT';
+}
+
 function buyTickets(amount, method) {
     method = method || 'line';
     pendingShopTicketAmount = amount;
     pendingShopPaymentMethod = method;
-    const price = (amount * 0.1).toFixed(1);
     document.getElementById('shopPurchaseAmount').textContent = '🎫 ' + amount + '개';
-    document.getElementById('shopPurchasePrice').textContent = price + ' USDT';
+    document.getElementById('shopPurchasePrice').textContent = formatPriceJpyUsdt(amount);
     document.getElementById('shopPurchasePopup').classList.add('active');
+}
+
+/** 상점 리스트 가격을 엔/USDT 둘 다 표기로 갱신 (일본 서비스 기준) */
+function updateShopListPrices() {
+    document.querySelectorAll('.shop-list-item[data-ticket-amount]').forEach(function (el) {
+        const amount = parseInt(el.getAttribute('data-ticket-amount'), 10);
+        const priceEl = el.querySelector('.shop-list-item-price');
+        if (priceEl && !isNaN(amount)) priceEl.textContent = formatPriceJpyUsdt(amount);
+    });
 }
 
 function closeShopPurchasePopup() {
