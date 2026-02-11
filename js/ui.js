@@ -787,8 +787,8 @@ function switchScreen(screenName) {
     if (screenName === 'ranking') {
         updateTrendMyResults();
     }
+    applyLanguageToPage();
     if (screenName === 'settings') {
-        applyLanguageToPage();
         updateSettingsLanguageDisplay();
     }
 
@@ -1070,7 +1070,7 @@ function saveLanguage(langCode) {
     console.log('[설정] 언어:', langCode || '자동');
 }
 
-// 설정 화면·모달용 번역 (추가 키는 여기에)
+// 설정 화면·모달·네비·기타 공통 문구 번역
 const I18N = {
     ko: {
         settingsTitle: '설정',
@@ -1084,7 +1084,33 @@ const I18N = {
         languageAuto: '자동 (기기 언어)',
         languageKo: '한국어',
         languageEn: 'English',
-        languageJa: '日本語'
+        languageJa: '日本語',
+        navShop: '상점',
+        navTrend: '트렌드',
+        navHome: '홈',
+        navWallet: '지갑',
+        navSettings: '설정',
+        screenShop: '🛍 상점',
+        screenTrend: '📊 트렌드 보드',
+        screenWallet: '💎 지갑',
+        eventNotif: '이벤트 알림',
+        eventNotifDesc: '새 시나리오 오픈 시 알림',
+        resultNotif: '결과 알림',
+        resultNotifDesc: '이벤트 종료 및 결과 발표 알림',
+        notifTimeRange: '알림 받을 시간대',
+        notifTimeRangeDesc: '이 시간대에만 알림을 보내드립니다',
+        timeStart: '시작',
+        timeEnd: '종료',
+        logout: '로그아웃',
+        logoutDesc: 'LINE 계정 연결을 해제합니다',
+        terms: '이용약관',
+        privacy: '개인정보처리방침',
+        inquiry: '문의하기',
+        appVersion: '앱 버전',
+        termsTitle: '이용약관',
+        privacyTitle: '개인정보처리방침',
+        backToSettings: '설정으로 돌아가기',
+        legalPlaceholder: '(내용을 입력할 예정입니다)'
     },
     en: {
         settingsTitle: 'Settings',
@@ -1098,7 +1124,33 @@ const I18N = {
         languageAuto: 'Auto (device)',
         languageKo: 'Korean',
         languageEn: 'English',
-        languageJa: 'Japanese'
+        languageJa: 'Japanese',
+        navShop: 'Shop',
+        navTrend: 'Trend',
+        navHome: 'Home',
+        navWallet: 'Wallet',
+        navSettings: 'Settings',
+        screenShop: '🛍 Shop',
+        screenTrend: '📊 Trend',
+        screenWallet: '💎 Wallet',
+        eventNotif: 'Event notifications',
+        eventNotifDesc: 'Notify when new scenarios open',
+        resultNotif: 'Result notifications',
+        resultNotifDesc: 'Notify when event ends and results are announced',
+        notifTimeRange: 'Notification hours',
+        notifTimeRangeDesc: 'Send notifications only during this time',
+        timeStart: 'Start',
+        timeEnd: 'End',
+        logout: 'Log out',
+        logoutDesc: 'Disconnect LINE account',
+        terms: 'Terms of Service',
+        privacy: 'Privacy Policy',
+        inquiry: 'Contact',
+        appVersion: 'App version',
+        termsTitle: 'Terms of Service',
+        privacyTitle: 'Privacy Policy',
+        backToSettings: 'Back to settings',
+        legalPlaceholder: '(Content to be added)'
     },
     ja: {
         settingsTitle: '設定',
@@ -1112,7 +1164,33 @@ const I18N = {
         languageAuto: '自動（端末の言語）',
         languageKo: '韓国語',
         languageEn: '英語',
-        languageJa: '日本語'
+        languageJa: '日本語',
+        navShop: 'ショップ',
+        navTrend: 'トレンド',
+        navHome: 'ホーム',
+        navWallet: 'ウォレット',
+        navSettings: '設定',
+        screenShop: '🛍 ショップ',
+        screenTrend: '📊 トレンド',
+        screenWallet: '💎 ウォレット',
+        eventNotif: 'イベント通知',
+        eventNotifDesc: '新シナリオ公開時に通知',
+        resultNotif: '結果通知',
+        resultNotifDesc: 'イベント終了・結果発表時に通知',
+        notifTimeRange: '通知を受け取る時間帯',
+        notifTimeRangeDesc: 'この時間帯のみ通知を送信します',
+        timeStart: '開始',
+        timeEnd: '終了',
+        logout: 'ログアウト',
+        logoutDesc: 'LINEアカウントの連携を解除します',
+        terms: '利用規約',
+        privacy: 'プライバシーポリシー',
+        inquiry: 'お問い合わせ',
+        appVersion: 'アプリバージョン',
+        termsTitle: '利用規約',
+        privacyTitle: 'プライバシーポリシー',
+        backToSettings: '設定に戻る',
+        legalPlaceholder: '（内容は追って追加します）'
     }
 };
 
@@ -1122,6 +1200,10 @@ function applyLanguageToPage() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (t[key] != null) el.textContent = t[key];
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+        const key = el.getAttribute('data-i18n-aria');
+        if (t[key] != null) el.setAttribute('aria-label', t[key]);
     });
 }
 
