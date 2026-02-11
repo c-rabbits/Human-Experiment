@@ -90,6 +90,11 @@ async function confirmGameStart() {
 
     console.log('게임 화면으로 전환');
 
+    // 포커스 해제로 버튼 오버 상태가 선택지로 넘어가지 않도록
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+    }
+
     // 하단 메뉴 숨기기 및 메인 콘텐츠 패딩 제거
     document.querySelector('.bottom-nav').classList.add('hidden');
     document.querySelector('.main-content').classList.add('no-padding');
@@ -231,7 +236,7 @@ function loadQuestion() {
         console.log('질문 텍스트 설정:', question.q);
     }
 
-    // 선택지 표시
+    // 선택지 표시 (항상 기본 상태로 시작)
     const optionsContainer = document.getElementById('optionsContainer');
     if (optionsContainer) {
         optionsContainer.innerHTML = '';
@@ -243,6 +248,15 @@ function loadQuestion() {
             onPointerTap(optionDiv, () => selectOption(index, optionDiv));
             optionsContainer.appendChild(optionDiv);
         });
+
+        // 남아 있을 수 있는 오버/선택 상태 제거 (포인터 이벤트 재계산)
+        optionsContainer.style.pointerEvents = 'none';
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                optionsContainer.style.pointerEvents = '';
+            });
+        });
+
         console.log('선택지 생성 완료:', question.options.length + '개');
     } else {
         console.error('optionsContainer를 찾을 수 없습니다');
