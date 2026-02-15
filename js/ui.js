@@ -277,6 +277,58 @@ function navigateBanner(url) {
 }
 
 // ========================================
+// 트렌드 날짜 드롭다운 (이벤트 있는 날만, 최신 기본 펼침, 하나 펼치면 나머지 접기)
+// ========================================
+function initTrendDateDropdown() {
+    const selectEl = document.getElementById('trendDateSelect');
+    const section = document.querySelector('.trend-section');
+    if (!selectEl || !section) return;
+
+    const groups = section.querySelectorAll('.trend-date-group');
+    if (groups.length === 0) return;
+
+    // data-date 기준 최신순 정렬 (내림차순)
+    const sorted = Array.from(groups).sort((a, b) => {
+        const dA = a.getAttribute('data-date') || '';
+        const dB = b.getAttribute('data-date') || '';
+        return dB.localeCompare(dA);
+    });
+
+    function formatDateLabel(iso) {
+        const [y, m, d] = iso.split('-');
+        const month = parseInt(m, 10);
+        const day = parseInt(d, 10);
+        return y + '년 ' + month + '월 ' + day + '일';
+    }
+
+    selectEl.innerHTML = '';
+    sorted.forEach((group) => {
+        const date = group.getAttribute('data-date');
+        if (!date) return;
+        const opt = document.createElement('option');
+        opt.value = date;
+        opt.textContent = formatDateLabel(date);
+        selectEl.appendChild(opt);
+    });
+
+    function showGroupForDate(date) {
+        groups.forEach((g) => {
+            g.style.display = g.getAttribute('data-date') === date ? '' : 'none';
+        });
+    }
+
+    const latestDate = sorted[0] && sorted[0].getAttribute('data-date');
+    if (latestDate) {
+        selectEl.value = latestDate;
+        showGroupForDate(latestDate);
+    }
+
+    selectEl.addEventListener('change', function () {
+        showGroupForDate(this.value);
+    });
+}
+
+// ========================================
 // 포인터 이벤트 공통 (모바일·웹 통합 탭/클릭)
 // ========================================
 
@@ -1171,7 +1223,7 @@ const I18N = {
         navWallet: '지갑',
         navSettings: '설정',
         screenShop: '🛍 상점',
-        screenTrend: '📊 트렌드 보드',
+        screenTrend: '📊 트렌드',
         screenWallet: '💎 지갑',
         eventNotif: '이벤트 알림',
         eventNotifDesc: '새 시나리오 오픈 시 알림',

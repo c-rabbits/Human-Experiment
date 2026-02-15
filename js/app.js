@@ -50,6 +50,9 @@ async function initApp() {
 
     // 상점 가격 표기 (엔/USDT 둘 다)
     if (typeof updateShopListPrices === 'function') updateShopListPrices();
+
+    // 트렌드 날짜 드롭다운 (이벤트 있는 날만, 최신 기본 펼침)
+    if (typeof initTrendDateDropdown === 'function') initTrendDateDropdown();
 }
 
 // ========================================
