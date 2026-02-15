@@ -326,6 +326,25 @@ function initTrendDateDropdown() {
         });
     }
 
+    const prevBtn = document.getElementById('trendDatePrevBtn');
+    const nextBtn = document.getElementById('trendDateNextBtn');
+
+    function getIndexForDate(date) {
+        return sorted.findIndex((g) => g.getAttribute('data-date') === date);
+    }
+
+    function setSelectedDate(date) {
+        if (!date) return;
+        if (labelEl) {
+            labelEl.textContent = formatDateLabel(date);
+            labelEl.setAttribute('data-current-date', date);
+        }
+        showGroupForDate(date);
+        const idx = getIndexForDate(date);
+        if (prevBtn) prevBtn.disabled = idx <= 0;
+        if (nextBtn) nextBtn.disabled = idx < 0 || idx >= sorted.length - 1;
+    }
+
     function closePanel() {
         panelEl.hidden = true;
         triggerEl.setAttribute('aria-expanded', 'false');
@@ -338,10 +357,7 @@ function initTrendDateDropdown() {
 
     // 기본: 최신 날짜 선택
     const latestDate = sorted[0] && sorted[0].getAttribute('data-date');
-    if (latestDate) {
-        labelEl.textContent = formatDateLabel(latestDate);
-        showGroupForDate(latestDate);
-    }
+    if (latestDate) setSelectedDate(latestDate);
 
     triggerEl.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -353,11 +369,25 @@ function initTrendDateDropdown() {
         item.addEventListener('click', function () {
             const date = this.getAttribute('data-date');
             if (!date) return;
-            labelEl.textContent = formatDateLabel(date);
-            showGroupForDate(date);
+            setSelectedDate(date);
             closePanel();
         });
     });
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+            const current = labelEl.getAttribute('data-current-date') || sorted[0] && sorted[0].getAttribute('data-date');
+            const idx = getIndexForDate(current);
+            if (idx > 0) setSelectedDate(sorted[idx - 1].getAttribute('data-date'));
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+            const current = labelEl.getAttribute('data-current-date') || (sorted[0] && sorted[0].getAttribute('data-date'));
+            const idx = getIndexForDate(current);
+            if (idx >= 0 && idx < sorted.length - 1) setSelectedDate(sorted[idx + 1].getAttribute('data-date'));
+        });
+    }
 
     document.addEventListener('click', function (e) {
         if (!triggerEl.contains(e.target) && !panelEl.contains(e.target)) closePanel();

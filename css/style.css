@@ -1627,6 +1627,35 @@ body {
     color: #666;
 }
 
+.trend-date-nav {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+    padding: 16px 0 8px;
+}
+
+.trend-date-nav-btn {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+    background: #fff;
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.trend-date-nav-btn:hover:not(:disabled) {
+    background: #f5f5f5;
+}
+
+.trend-date-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .trend-date-group .trend-scenario-card:not(:first-child) {
     margin-top: 16px;
 }
