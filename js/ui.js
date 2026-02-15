@@ -277,54 +277,43 @@ function navigateBanner(url) {
 }
 
 // ========================================
-// 트렌드 날짜 드롭다운 (이벤트 있는 날만, 최신 기본 펼침, 하나 펼치면 나머지 접기)
+// 트렌드 날짜 아코디언 (목록에서 하나만 펼침, 최신 기본 펼침)
 // ========================================
 function initTrendDateDropdown() {
-    const selectEl = document.getElementById('trendDateSelect');
-    const section = document.querySelector('.trend-section');
-    if (!selectEl || !section) return;
+    const listEl = document.querySelector('.trend-date-list');
+    if (!listEl) return;
 
-    const groups = section.querySelectorAll('.trend-date-group');
+    const groups = listEl.querySelectorAll('.trend-date-group');
     if (groups.length === 0) return;
 
-    // data-date 기준 최신순 정렬 (내림차순)
+    // data-date 기준 최신순 정렬 후 DOM 순서 재배치 (최신이 위로)
     const sorted = Array.from(groups).sort((a, b) => {
         const dA = a.getAttribute('data-date') || '';
         const dB = b.getAttribute('data-date') || '';
         return dB.localeCompare(dA);
     });
+    sorted.forEach((g) => listEl.appendChild(g));
 
-    function formatDateLabel(iso) {
-        const [y, m, d] = iso.split('-');
-        const month = parseInt(m, 10);
-        const day = parseInt(d, 10);
-        return y + '년 ' + month + '월 ' + day + '일';
+    function setExpanded(group) {
+        groups.forEach((g) => g.classList.remove('trend-date-expanded'));
+        if (group) group.classList.add('trend-date-expanded');
     }
 
-    selectEl.innerHTML = '';
-    sorted.forEach((group) => {
-        const date = group.getAttribute('data-date');
-        if (!date) return;
-        const opt = document.createElement('option');
-        opt.value = date;
-        opt.textContent = formatDateLabel(date);
-        selectEl.appendChild(opt);
-    });
+    // 최신(첫 번째) 날짜만 펼침
+    setExpanded(sorted[0]);
 
-    function showGroupForDate(date) {
-        groups.forEach((g) => {
-            g.style.display = g.getAttribute('data-date') === date ? '' : 'none';
+    groups.forEach((group) => {
+        const trigger = group.querySelector('.trend-date-trigger');
+        if (!trigger) return;
+        trigger.addEventListener('click', function () {
+            setExpanded(group);
         });
-    }
-
-    const latestDate = sorted[0] && sorted[0].getAttribute('data-date');
-    if (latestDate) {
-        selectEl.value = latestDate;
-        showGroupForDate(latestDate);
-    }
-
-    selectEl.addEventListener('change', function () {
-        showGroupForDate(this.value);
+        trigger.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setExpanded(group);
+            }
+        });
     });
 }
 
