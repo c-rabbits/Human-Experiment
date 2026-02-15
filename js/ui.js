@@ -10,6 +10,7 @@ let currentBannerIndex = 0;    // 실제 배너 인덱스 (0 ~ bannerCount-1)
 let bannerVisualIndex = 0;     // 트랙 상의 시각적 인덱스 (클론 포함)
 let bannerCount = 0;           // 실제 배너 개수
 let bannerInterval;
+let bannerCloneJumpTimeout = null; // 모바일에서 transitionend 미발생 시 폴백
 let pointerStartX = 0;
 let pointerEndX = 0;
 let pointerStartTime = 0;
@@ -159,6 +160,21 @@ function updateBannerPosition() {
 
     track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
 
+    // 클론 위치면 transitionend 미발생 시 대비 폴백 타이머 (모바일 대응)
+    if (bannerCloneJumpTimeout) {
+        clearTimeout(bannerCloneJumpTimeout);
+        bannerCloneJumpTimeout = null;
+    }
+    const atLeftClone = (bannerVisualIndex === 0);
+    const atRightClone = (bannerVisualIndex === bannerCount + 1);
+    if (atLeftClone || atRightClone) {
+        bannerCloneJumpTimeout = setTimeout(() => {
+            bannerCloneJumpTimeout = null;
+            if (bannerVisualIndex === 0) doBannerCloneJump(true);
+            else if (bannerVisualIndex === bannerCount + 1) doBannerCloneJump(false);
+        }, 600); // transition 0.5s보다 약간 여유 (모바일 transitionend 미발생 대비)
+    }
+
     dots.forEach((dot, index) => {
         if (index === currentBannerIndex) {
             dot.classList.add('active');
@@ -168,9 +184,35 @@ function updateBannerPosition() {
     });
 }
 
-// 배너 무한 루프 처리를 위한 transition 종료 핸들러
+/** 클론 슬라이드에서 실제 슬라이드로 순간 점프 (무한 루프 유지) */
+function doBannerCloneJump(atLeftClone) {
+    const track = document.getElementById('bannerTrack');
+    if (!track) return;
+    const atRightClone = (bannerVisualIndex === bannerCount + 1);
+    if (!atLeftClone && !atRightClone) return;
+
+    track.style.transition = 'none';
+    if (atLeftClone) {
+        bannerVisualIndex = bannerCount;
+        currentBannerIndex = bannerCount - 1;
+    } else {
+        bannerVisualIndex = 1;
+        currentBannerIndex = 0;
+    }
+    track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
+    requestAnimationFrame(() => { track.style.transition = ''; });
+
+    const dots = document.querySelectorAll('.banner-dot');
+    dots.forEach((dot, index) => {
+        if (index === currentBannerIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+    });
+}
+
+// 배너 무한 루프 처리를 위한 transition 종료 핸들러 (모바일: transitionend 불안정 시 폴백 타이머로 보완)
 function handleBannerTransitionEnd(e) {
     if (e && e.propertyName && e.propertyName !== 'transform') return;
+    if (e && e.target && e.target.id !== 'bannerTrack') return; // 자식 요소 전파 무시
     const track = document.getElementById('bannerTrack');
     if (!track) return;
 
@@ -178,19 +220,12 @@ function handleBannerTransitionEnd(e) {
     const atRightClone = (bannerVisualIndex === bannerCount + 1);
     if (!atLeftClone && !atRightClone) return;
 
-    // 다음 프레임에서 점프 실행 (transition 제거 → transform 변경 → 다음 프레임에 transition 복원)
-    requestAnimationFrame(() => {
-        track.style.transition = 'none';
-        if (atLeftClone) {
-            bannerVisualIndex = bannerCount;
-            currentBannerIndex = bannerCount - 1;
-        } else {
-            bannerVisualIndex = 1;
-            currentBannerIndex = 0;
-        }
-        track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
-        requestAnimationFrame(() => { track.style.transition = ''; });
-    });
+    if (bannerCloneJumpTimeout) {
+        clearTimeout(bannerCloneJumpTimeout);
+        bannerCloneJumpTimeout = null;
+    }
+
+    requestAnimationFrame(() => doBannerCloneJump(atLeftClone));
 }
 
 function navigateBanner(url) {
