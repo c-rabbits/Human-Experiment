@@ -259,7 +259,7 @@ body {
 .banner-track {
     display: flex;
     transition: transform 0.5s ease-in-out;
-    will-change: transform;
+    /* will-change 제거: 모바일에서 반복 스와이프 시 레이어가 깨져 이미지가 사라지는 현상 완화 */
 }
 
 .banner-track.dragging {

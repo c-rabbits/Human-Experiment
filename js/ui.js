@@ -11,6 +11,7 @@ let bannerVisualIndex = 0;     // 트랙 상의 시각적 인덱스 (클론 포�
 let bannerCount = 0;           // 실제 배너 개수
 let bannerInterval;
 let bannerCloneJumpTimeout = null; // 모바일에서 transitionend 미발생 시 폴백
+let bannerImageUrls = []; // 원본 배너 이미지 URL (모바일 반복 스와이프 시 재적용용)
 let pointerStartX = 0;
 let pointerEndX = 0;
 let pointerStartTime = 0;
@@ -41,6 +42,13 @@ function initBannerSlider() {
     const lastClone = slides[slides.length - 1].cloneNode(true);
     firstClone.classList.add('banner-clone');
     lastClone.classList.add('banner-clone');
+
+    // 원본 슬라이드 배경 URL 저장 (모바일 반복 스와이프 후 이미지 사라짐 방지)
+    bannerImageUrls = Array.from(slides).map(s => {
+        const img = s.querySelector('.banner-image');
+        if (!img) return '';
+        return img.style.backgroundImage || (window.getComputedStyle && getComputedStyle(img).backgroundImage) || '';
+    });
 
     const copyBannerImage = (fromSlide, toSlide) => {
         const fromImg = fromSlide.querySelector('.banner-image');
@@ -200,13 +208,31 @@ function doBannerCloneJump(atLeftClone) {
         currentBannerIndex = 0;
     }
     track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
-    requestAnimationFrame(() => { track.style.transition = ''; });
+    requestAnimationFrame(() => {
+        track.style.transition = '';
+        // 모바일: 반복 스와이프 시 오프스크린 레이어에서 배경이 사라지는 것 방지 — 현재 슬라이드에 이미지 재적용
+        repaintBannerVisibleSlide();
+    });
 
     const dots = document.querySelectorAll('.banner-dot');
     dots.forEach((dot, index) => {
         if (index === currentBannerIndex) dot.classList.add('active');
         else dot.classList.remove('active');
     });
+}
+
+/** 현재 보이는 배너 슬라이드에 배경 이미지 재적용 (모바일 repaint 유도) */
+function repaintBannerVisibleSlide() {
+    const track = document.getElementById('bannerTrack');
+    if (!track || !bannerImageUrls.length) return;
+    const slide = track.children[bannerVisualIndex];
+    if (!slide) return;
+    const img = slide.querySelector('.banner-image');
+    const url = bannerImageUrls[currentBannerIndex];
+    if (img && url) {
+        img.style.backgroundImage = url;
+        void track.offsetHeight; // reflow로 즉시 그리기 유도
+    }
 }
 
 // 배너 무한 루프 처리를 위한 transition 종료 핸들러 (모바일: transitionend 불안정 시 폴백 타이머로 보완)
@@ -218,14 +244,16 @@ function handleBannerTransitionEnd(e) {
 
     const atLeftClone = (bannerVisualIndex === 0);
     const atRightClone = (bannerVisualIndex === bannerCount + 1);
-    if (!atLeftClone && !atRightClone) return;
-
-    if (bannerCloneJumpTimeout) {
-        clearTimeout(bannerCloneJumpTimeout);
-        bannerCloneJumpTimeout = null;
+    if (atLeftClone || atRightClone) {
+        if (bannerCloneJumpTimeout) {
+            clearTimeout(bannerCloneJumpTimeout);
+            bannerCloneJumpTimeout = null;
+        }
+        requestAnimationFrame(() => doBannerCloneJump(atLeftClone));
+    } else {
+        // 클론이 아닐 때도 보이는 슬라이드 repaint (모바일 반복 스와이프 시 이미지 유지)
+        repaintBannerVisibleSlide();
     }
-
-    requestAnimationFrame(() => doBannerCloneJump(atLeftClone));
 }
 
 function navigateBanner(url) {
