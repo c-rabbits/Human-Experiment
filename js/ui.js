@@ -134,14 +134,7 @@ function handlePointerEnd(e) {
 }
 
 function handleBannerClick() {
-    // 현재 배너 인덱스에 따라 동작
-    // 0번 배너: 지갑 → 친구초대 이벤트 섹션으로 이동
-    if (currentBannerIndex === 0) {
-        onInviteBannerClick();
-        return;
-    }
-
-    // 나머지 배너는 추후 외부 링크 등으로 확장 가능
+    // 배너 클릭 시 동작 (추후 외부 링크 등으로 확장 가능)
 }
 
 function startBannerAutoSlide() {
