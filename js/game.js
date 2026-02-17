@@ -597,12 +597,14 @@ function buyTickets(amount, method) {
     document.getElementById('shopPurchasePopup').classList.add('active');
 }
 
-/** 상점 리스트 가격을 엔/USDT 둘 다 표기로 갱신 (일본 서비스 기준) */
+/** 상점 리스트 가격을 엔/USDT 둘 다 표기로 갱신 (LINE Pay/인앱 캐시 구매용만; 티켓 탭의 Cash 가격은 제외) */
 function updateShopListPrices() {
     document.querySelectorAll('.shop-list-item[data-ticket-amount]').forEach(function (el) {
-        const amount = parseInt(el.getAttribute('data-ticket-amount'), 10);
-        const priceEl = el.querySelector('.shop-list-item-price');
-        if (priceEl && !isNaN(amount)) priceEl.textContent = formatPriceJpyUsdt(amount);
+        if (el.querySelector('.shop-list-buy-btn-line, .shop-list-buy-btn-kaia')) {
+            const amount = parseInt(el.getAttribute('data-ticket-amount'), 10);
+            const priceEl = el.querySelector('.shop-list-item-price');
+            if (priceEl && !isNaN(amount)) priceEl.textContent = formatPriceJpyUsdt(amount);
+        }
     });
 }
 

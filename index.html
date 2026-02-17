@@ -551,81 +551,381 @@
             <div class="other-screen" id="shopScreen">
                 <div class="screen-title" data-i18n="screenShop">🛍 상점</div>
 
-                <div class="shop-section">
-                    <div class="shop-category-title">🎫 티켓 구매</div>
-                    <div class="shop-list">
-                        <div class="shop-list-item" data-ticket-amount="10">
-                            <div class="shop-list-item-row shop-list-item-row-top">
-                                <div class="shop-list-item-left">
-                                    <span class="shop-list-item-icon">🎫</span>
-                                    <span class="shop-list-item-name">티켓 10개</span>
+                <div class="shop-tabs" role="tablist">
+                    <button type="button" class="shop-tab active" role="tab" aria-selected="true" data-tab="cash" onclick="switchShopTab('cash')">캐시 구매</button>
+                    <button type="button" class="shop-tab" role="tab" aria-selected="false" data-tab="item" onclick="switchShopTab('item')">아이템 구매</button>
+                    <button type="button" class="shop-tab" role="tab" aria-selected="false" data-tab="ticket" onclick="switchShopTab('ticket')">티켓 구매</button>
+                </div>
+
+                <!-- [캐시 구매] -->
+                <div class="shop-tab-panel active" id="shopPanelCash" role="tabpanel">
+                    <div class="shop-section">
+                        <div class="shop-category-title">LINE Pay</div>
+                        <div class="shop-list">
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 100</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥300</span>
                                 </div>
-                                <span class="shop-list-item-price">¥1,500 / 1.0 USDT</span>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="buyCash(100, 'line')">LINE Pay</button>
+                                </div>
                             </div>
-                            <div class="shop-list-item-row shop-list-item-row-bottom">
-                                <div class="shop-list-buy-btns">
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="event.stopPropagation(); buyTickets(10, 'line')">LINE Pay</button>
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-kaia" onclick="event.stopPropagation(); buyTickets(10, 'kaia')">KAIA</button>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 500</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥1,500</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="buyCash(500, 'line')">LINE Pay</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 1,000</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥3,000</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="buyCash(1000, 'line')">LINE Pay</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 2,000</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥6,000</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="buyCash(2000, 'line')">LINE Pay</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 5,000</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥15,000</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="buyCash(5000, 'line')">LINE Pay</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="shop-list-item" data-ticket-amount="30">
-                            <div class="shop-list-item-row shop-list-item-row-top">
-                                <div class="shop-list-item-left">
-                                    <span class="shop-list-item-icon">🎫</span>
-                                    <span class="shop-list-item-name">티켓 30개</span>
+                    </div>
+                    <div class="shop-section">
+                        <div class="shop-category-title">인앱 결제</div>
+                        <div class="shop-list">
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 100</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥300</span>
                                 </div>
-                                <span class="shop-list-item-price">¥4,500 / 3.0 USDT</span>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-inapp" onclick="buyCash(100, 'inapp')">인앱 결제</button>
+                                </div>
                             </div>
-                            <div class="shop-list-item-row shop-list-item-row-bottom">
-                                <div class="shop-list-buy-btns">
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="event.stopPropagation(); buyTickets(30, 'line')">LINE Pay</button>
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-kaia" onclick="event.stopPropagation(); buyTickets(30, 'kaia')">KAIA</button>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 500</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥1,500</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-inapp" onclick="buyCash(500, 'inapp')">인앱 결제</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 1,000</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥3,000</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-inapp" onclick="buyCash(1000, 'inapp')">인앱 결제</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 2,000</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥6,000</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-inapp" onclick="buyCash(2000, 'inapp')">인앱 결제</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">💰</span>
+                                        <span class="shop-list-item-name">캐시 5,000</span>
+                                    </div>
+                                    <span class="shop-list-item-price">¥15,000</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-inapp" onclick="buyCash(5000, 'inapp')">인앱 결제</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="shop-list-item" data-ticket-amount="50">
-                            <div class="shop-list-item-row shop-list-item-row-top">
-                                <div class="shop-list-item-left">
-                                    <span class="shop-list-item-icon">🎫</span>
-                                    <span class="shop-list-item-name">티켓 50개</span>
+                    </div>
+                </div>
+
+                <!-- [아이템 구매] (캐시로 구매) -->
+                <div class="shop-tab-panel" id="shopPanelItem" role="tabpanel" hidden>
+                    <div class="shop-section">
+                        <div class="shop-category-title">1) 프로필 테두리</div>
+                        <div class="shop-list shop-list-items">
+                            <div class="shop-list-item shop-item" data-item-type="profile_frame" data-item-id="gold">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🖼️</span>
+                                        <span class="shop-list-item-name">프로필 테두리 골드</span>
+                                    </div>
+                                    <span class="shop-list-item-price">30 Cash</span>
                                 </div>
-                                <span class="shop-list-item-price">¥7,500 / 5.0 USDT</span>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('profile_frame','gold',30)">캐시로 구매</button>
+                                </div>
                             </div>
-                            <div class="shop-list-item-row shop-list-item-row-bottom">
-                                <div class="shop-list-buy-btns">
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="event.stopPropagation(); buyTickets(50, 'line')">LINE Pay</button>
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-kaia" onclick="event.stopPropagation(); buyTickets(50, 'kaia')">KAIA</button>
+                            <div class="shop-list-item shop-item" data-item-type="profile_frame" data-item-id="flower">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🖼️</span>
+                                        <span class="shop-list-item-name">프로필 테두리 꽃무늬</span>
+                                    </div>
+                                    <span class="shop-list-item-price">30 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('profile_frame','flower',30)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="profile_frame" data-item-id="double_circle">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🖼️</span>
+                                        <span class="shop-list-item-name">프로필 테두리 이중 원</span>
+                                    </div>
+                                    <span class="shop-list-item-price">40 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('profile_frame','double_circle',40)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="profile_frame" data-item-id="neon">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🖼️</span>
+                                        <span class="shop-list-item-name">프로필 테두리 네온</span>
+                                    </div>
+                                    <span class="shop-list-item-price">50 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('profile_frame','neon',50)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="profile_frame" data-item-id="animation_bg">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🖼️</span>
+                                        <span class="shop-list-item-name">프로필 테두리 애니메이션 배경</span>
+                                    </div>
+                                    <span class="shop-list-item-price">80 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('profile_frame','animation_bg',80)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="profile_frame" data-item-id="classic">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🖼️</span>
+                                        <span class="shop-list-item-name">프로필 테두리 클래식</span>
+                                    </div>
+                                    <span class="shop-list-item-price">25 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('profile_frame','classic',25)">캐시로 구매</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="shop-list-item" data-ticket-amount="100">
-                            <div class="shop-list-item-row shop-list-item-row-top">
-                                <div class="shop-list-item-left">
-                                    <span class="shop-list-item-icon">🎫</span>
-                                    <span class="shop-list-item-name">티켓 100개</span>
+                    </div>
+                    <div class="shop-section">
+                        <div class="shop-category-title">2) 닉네임 효과</div>
+                        <div class="shop-list shop-list-items">
+                            <div class="shop-list-item shop-item" data-item-type="nickname_effect" data-item-id="color">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">✨</span>
+                                        <span class="shop-list-item-name">닉네임 색상 변경</span>
+                                    </div>
+                                    <span class="shop-list-item-price">20 Cash</span>
                                 </div>
-                                <span class="shop-list-item-price">¥15,000 / 10.0 USDT</span>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('nickname_effect','color',20)">캐시로 구매</button>
+                                </div>
                             </div>
-                            <div class="shop-list-item-row shop-list-item-row-bottom">
-                                <div class="shop-list-buy-btns">
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="event.stopPropagation(); buyTickets(100, 'line')">LINE Pay</button>
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-kaia" onclick="event.stopPropagation(); buyTickets(100, 'kaia')">KAIA</button>
+                            <div class="shop-list-item shop-item" data-item-type="nickname_effect" data-item-id="gradient">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">✨</span>
+                                        <span class="shop-list-item-name">닉네임 그라데이션 효과</span>
+                                    </div>
+                                    <span class="shop-list-item-price">35 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('nickname_effect','gradient',35)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="nickname_effect" data-item-id="sparkle">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">✨</span>
+                                        <span class="shop-list-item-name">닉네임 반짝임 효과</span>
+                                    </div>
+                                    <span class="shop-list-item-price">40 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('nickname_effect','sparkle',40)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="nickname_effect" data-item-id="shake">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">✨</span>
+                                        <span class="shop-list-item-name">닉네임 흔들림 효과</span>
+                                    </div>
+                                    <span class="shop-list-item-price">35 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('nickname_effect','shake',35)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="nickname_effect" data-item-id="typing">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">✨</span>
+                                        <span class="shop-list-item-name">닉네임 타이핑 애니메이션</span>
+                                    </div>
+                                    <span class="shop-list-item-price">50 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('nickname_effect','typing',50)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item shop-item" data-item-type="nickname_effect" data-item-id="shadow">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">✨</span>
+                                        <span class="shop-list-item-name">닉네임 그림자 스타일</span>
+                                    </div>
+                                    <span class="shop-list-item-price">30 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('nickname_effect','shadow',30)">캐시로 구매</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="shop-list-item" data-ticket-amount="300">
-                            <div class="shop-list-item-row shop-list-item-row-top">
-                                <div class="shop-list-item-left">
-                                    <span class="shop-list-item-icon">🎫</span>
-                                    <span class="shop-list-item-name">티켓 300개</span>
+                    </div>
+                    <div class="shop-section">
+                        <div class="shop-category-title">3) 아바타 스킨 (동물 9종)</div>
+                        <div class="shop-list shop-list-items" id="shopAvatarSkinList">
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="dog"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐕</span><span class="shop-list-item-name">강아지</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','dog',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="cat"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐱</span><span class="shop-list-item-name">고양이</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','cat',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="rabbit"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐰</span><span class="shop-list-item-name">토끼</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','rabbit',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="fox"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🦊</span><span class="shop-list-item-name">여우</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','fox',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="bear"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐻</span><span class="shop-list-item-name">곰</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','bear',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="panda"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐼</span><span class="shop-list-item-name">판다</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','panda',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="lion"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🦁</span><span class="shop-list-item-name">사자</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','lion',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="tiger"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐯</span><span class="shop-list-item-name">호랑이</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','tiger',25)">캐시로 구매</button></div></div>
+                            <div class="shop-list-item shop-item" data-item-type="avatar_skin" data-item-id="elephant"><div class="shop-list-item-row shop-list-item-row-top"><div class="shop-list-item-left"><span class="shop-list-item-icon">🐘</span><span class="shop-list-item-name">코끼리</span></div><span class="shop-list-item-price">25 Cash</span></div><div class="shop-list-item-row shop-list-item-row-bottom"><button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyItem('avatar_skin','elephant',25)">캐시로 구매</button></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [티켓 구매] (캐시로 구매) -->
+                <div class="shop-tab-panel" id="shopPanelTicket" role="tabpanel" hidden>
+                    <div class="shop-section">
+                        <div class="shop-category-title">🎫 티켓 구매 (캐시)</div>
+                        <div class="shop-list">
+                            <div class="shop-list-item" data-ticket-amount="10" data-ticket-price="10">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🎫</span>
+                                        <span class="shop-list-item-name">티켓 10개</span>
+                                    </div>
+                                    <span class="shop-list-item-price">10 Cash</span>
                                 </div>
-                                <span class="shop-list-item-price">¥45,000 / 30.0 USDT</span>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyTicketsWithCash(10, 10)">캐시로 구매</button>
+                                </div>
                             </div>
-                            <div class="shop-list-item-row shop-list-item-row-bottom">
-                                <div class="shop-list-buy-btns">
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-line" onclick="event.stopPropagation(); buyTickets(300, 'line')">LINE Pay</button>
-                                    <button type="button" class="shop-list-buy-btn shop-list-buy-btn-kaia" onclick="event.stopPropagation(); buyTickets(300, 'kaia')">KAIA</button>
+                            <div class="shop-list-item" data-ticket-amount="30" data-ticket-price="30">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🎫</span>
+                                        <span class="shop-list-item-name">티켓 30개</span>
+                                    </div>
+                                    <span class="shop-list-item-price">30 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyTicketsWithCash(30, 30)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item" data-ticket-amount="50" data-ticket-price="50">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🎫</span>
+                                        <span class="shop-list-item-name">티켓 50개</span>
+                                    </div>
+                                    <span class="shop-list-item-price">50 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyTicketsWithCash(50, 50)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item" data-ticket-amount="100" data-ticket-price="100">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🎫</span>
+                                        <span class="shop-list-item-name">티켓 100개</span>
+                                    </div>
+                                    <span class="shop-list-item-price">100 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyTicketsWithCash(100, 100)">캐시로 구매</button>
+                                </div>
+                            </div>
+                            <div class="shop-list-item" data-ticket-amount="300" data-ticket-price="300">
+                                <div class="shop-list-item-row shop-list-item-row-top">
+                                    <div class="shop-list-item-left">
+                                        <span class="shop-list-item-icon">🎫</span>
+                                        <span class="shop-list-item-name">티켓 300개</span>
+                                    </div>
+                                    <span class="shop-list-item-price">300 Cash</span>
+                                </div>
+                                <div class="shop-list-item-row shop-list-item-row-bottom">
+                                    <button type="button" class="shop-list-buy-btn shop-list-buy-cash" onclick="buyTicketsWithCash(300, 300)">캐시로 구매</button>
                                 </div>
                             </div>
                         </div>

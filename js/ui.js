@@ -532,6 +532,68 @@ function startCountdowns() {
 }
 
 // ========================================
+// 상점 탭 전환
+// ========================================
+function switchShopTab(tab) {
+    var panels = document.querySelectorAll('.shop-tab-panel');
+    var tabs = document.querySelectorAll('.shop-tab');
+    panels.forEach(function (p) {
+        p.classList.remove('active');
+        p.setAttribute('hidden', '');
+    });
+    tabs.forEach(function (t) {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+    });
+    var panel = document.getElementById('shopPanel' + (tab === 'cash' ? 'Cash' : tab === 'item' ? 'Item' : 'Ticket'));
+    var tabBtn = document.querySelector('.shop-tab[data-tab="' + tab + '"]');
+    if (panel) {
+        panel.classList.add('active');
+        panel.removeAttribute('hidden');
+    }
+    if (tabBtn) {
+        tabBtn.classList.add('active');
+        tabBtn.setAttribute('aria-selected', 'true');
+    }
+}
+
+function buyCash(amount, method) {
+    if (typeof showToast === 'function') {
+        showToast(method === 'line' ? 'LINE Pay 결제 기능은 준비 중입니다.' : '인앱 결제 기능은 준비 중입니다.');
+    } else {
+        alert(method === 'line' ? 'LINE Pay 결제 기능은 준비 중입니다.' : '인앱 결제 기능은 준비 중입니다.');
+    }
+}
+
+function buyItem(itemType, itemId, priceCash) {
+    var cashEl = document.getElementById('cashCount');
+    var currentCash = parseInt(cashEl ? cashEl.textContent : '0', 10) || 0;
+    if (currentCash < priceCash) {
+        if (typeof showToast === 'function') showToast('캐시가 부족합니다.');
+        else alert('캐시가 부족합니다.');
+        return;
+    }
+    updateUserStats({ cash: currentCash - priceCash });
+    if (typeof showToast === 'function') showToast('구매 완료! (보유 아이템 적용은 준비 중)');
+    else alert('구매 완료! (보유 아이템 적용은 준비 중)');
+}
+
+function buyTicketsWithCash(amount, priceCash) {
+    var cashEl = document.getElementById('cashCount');
+    var ticketEl = document.getElementById('ticketCount');
+    var currentCash = parseInt(cashEl ? cashEl.textContent : '0', 10) || 0;
+    var currentTickets = parseInt(ticketEl ? ticketEl.textContent : '0', 10) || 0;
+    if (currentCash < priceCash) {
+        if (typeof showToast === 'function') showToast('캐시가 부족합니다.');
+        else alert('캐시가 부족합니다.');
+        return;
+    }
+    updateUserStats({ cash: currentCash - priceCash, tickets: currentTickets + amount });
+    if (typeof showToast === 'function') showToast('티켓 ' + amount + '개 구매 완료!');
+    else alert('티켓 ' + amount + '개 구매 완료!');
+}
+
+// ========================================
 // 유저 정보 업데이트
 // ========================================
 
