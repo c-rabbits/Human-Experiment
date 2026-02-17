@@ -435,10 +435,10 @@ async function showFinalResult(result) {
         saveTrendMyResult(true, result.correctCount, result.totalQuestions);
 
         // 유저 스탯 업데이트
-        const currentCoins = parseInt(document.getElementById('coinCount').textContent);
+        const currentCash = parseInt(document.getElementById('cashCount').textContent);
         const currentPoints = parseInt(document.getElementById('rewardPoints').textContent);
         updateUserStats({
-            coins: currentCoins + Math.floor(parseFloat(rewardPerWinner)),
+            cash: currentCash + Math.floor(parseFloat(rewardPerWinner)),
             rewardPoints: currentPoints + earnedPoints
         });
     } else {

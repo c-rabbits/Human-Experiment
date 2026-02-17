@@ -31,7 +31,7 @@ const API = {
                 pictureUrl: liffProfile ? liffProfile.pictureUrl : '',
                 statusMessage: liffProfile ? (liffProfile.statusMessage || '') : '',
                 characterName: liffProfile ? liffProfile.displayName : '대중러버',
-                coins: 1250,
+                cash: 1250,
                 rewardPoints: 850,
                 tickets: 5,
                 // 지갑 데이터 (Kaia 온체인)
@@ -129,7 +129,7 @@ const API = {
                 eventTimeLeft: 6138, // 초 단위
                 // 이벤트 종료 후 추가 데이터
                 isWinner: false,
-                earnedCoins: 0,
+                earnedCash: 0,
                 earnedPoints: 0,
                 rewardAmount: 0,
                 totalWinners: 0,

@@ -537,8 +537,8 @@ function startCountdowns() {
 
 function updateUserStats(data) {
     console.log('유저 스탯 업데이트:', data);
-    if (data.coins !== undefined) {
-        document.getElementById('coinCount').textContent = data.coins;
+    if (data.cash !== undefined) {
+        document.getElementById('cashCount').textContent = data.cash;
     }
     if (data.rewardPoints !== undefined) {
         document.getElementById('rewardPoints').textContent = data.rewardPoints;
@@ -599,11 +599,11 @@ function updateWalletPage(data) {
     }
 
     // 게임 재화
-    const walletCoins = document.getElementById('walletCoins');
+    const walletCash = document.getElementById('walletCash');
     const walletPoints = document.getElementById('walletPoints');
     const walletTickets = document.getElementById('walletTickets');
 
-    walletCoins.textContent = data.coins !== undefined ? data.coins.toLocaleString() : '-';
+    walletCash.textContent = data.cash !== undefined ? data.cash.toLocaleString() : '-';
     walletPoints.textContent = data.rewardPoints !== undefined ? data.rewardPoints.toLocaleString() : '-';
     walletTickets.textContent = data.tickets !== undefined ? data.tickets : '-';
 }
