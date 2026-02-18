@@ -425,7 +425,7 @@
                     <p class="nickname-popup-desc">2자 이상 10자 이하, 중복 불가</p>
                     <input type="text" class="nickname-popup-input" id="nicknamePopupInput" maxlength="10" placeholder="닉네임 입력" autocomplete="off">
                     <label class="nickname-popup-default-name">
-                        <input type="checkbox" id="nicknamePopupUseDefaultName"> 기본 이름 사용하기 (체크 시 닉네임과 관계없이 기본 이름이 노출됩니다)
+                        <input type="checkbox" id="nicknamePopupUseDefaultName"> 기본 이름 사용하기
                     </label>
                     <div class="nickname-popup-error" id="nicknamePopupError" aria-live="polite"></div>
                     <div class="nickname-popup-buttons">
@@ -1399,49 +1399,53 @@
                 </div>
 
                 <!-- 보유 토큰 섹션 -->
-                <div class="wallet-section-title">보유 토큰</div>
-                <div class="wallet-token-card">
-                    <div class="wallet-token-row">
-                        <div class="wallet-token-info">
-                            <span class="wallet-token-icon">💵</span>
-                            <span class="wallet-token-name">USDT</span>
+                <div class="settings-section settings-section-card">
+                    <div class="settings-section-title">보유 토큰</div>
+                    <div class="wallet-token-card">
+                        <div class="wallet-token-row">
+                            <div class="wallet-token-info">
+                                <span class="wallet-token-icon">💵</span>
+                                <span class="wallet-token-name">USDT</span>
+                            </div>
+                            <div class="wallet-token-right">
+                                <span class="wallet-token-balance" id="walletUSDT">0.00</span>
+                                <button class="wallet-claim-btn" onclick="claimToken('usdt')">
+                                    클레임 <span class="wallet-claimable" id="walletUSDTClaimable">0.00</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="wallet-token-right">
-                            <span class="wallet-token-balance" id="walletUSDT">0.00</span>
-                            <button class="wallet-claim-btn" onclick="claimToken('usdt')">
-                                클레임 <span class="wallet-claimable" id="walletUSDTClaimable">0.00</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="wallet-token-divider"></div>
-                    <div class="wallet-token-row">
-                        <div class="wallet-token-info">
-                            <span class="wallet-token-icon">🪙</span>
-                            <span class="wallet-token-name">KAIA</span>
-                        </div>
-                        <div class="wallet-token-right">
-                            <span class="wallet-token-balance" id="walletKAIA">0.00</span>
-                            <button class="wallet-claim-btn" onclick="claimToken('kaia')">
-                                클레임 <span class="wallet-claimable" id="walletKAIAClaimable">0.00</span>
-                            </button>
+                        <div class="wallet-token-divider"></div>
+                        <div class="wallet-token-row">
+                            <div class="wallet-token-info">
+                                <span class="wallet-token-icon">🪙</span>
+                                <span class="wallet-token-name">KAIA</span>
+                            </div>
+                            <div class="wallet-token-right">
+                                <span class="wallet-token-balance" id="walletKAIA">0.00</span>
+                                <button class="wallet-claim-btn" onclick="claimToken('kaia')">
+                                    클레임 <span class="wallet-claimable" id="walletKAIAClaimable">0.00</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 재화 정보 (기존 유지) -->
-                <div class="wallet-section-title">게임 재화</div>
-                <div class="wallet-asset-card">
-                    <div class="wallet-asset-row">
-                        <span class="wallet-asset-label">💰 보유 캐시</span>
-                        <span class="wallet-asset-value" id="walletCash">-</span>
-                    </div>
-                    <div class="wallet-asset-row">
-                        <span class="wallet-asset-label">⭐ 리워드 포인트</span>
-                        <span class="wallet-asset-value" id="walletPoints">-</span>
-                    </div>
-                    <div class="wallet-asset-row">
-                        <span class="wallet-asset-label">🎫 보유 티켓</span>
-                        <span class="wallet-asset-value" id="walletTickets">-</span>
+                <div class="settings-section settings-section-card">
+                    <div class="settings-section-title">게임 재화</div>
+                    <div class="wallet-asset-card">
+                        <div class="wallet-asset-row">
+                            <span class="wallet-asset-label">💰 보유 캐시</span>
+                            <span class="wallet-asset-value" id="walletCash">-</span>
+                        </div>
+                        <div class="wallet-asset-row">
+                            <span class="wallet-asset-label">⭐ 리워드 포인트</span>
+                            <span class="wallet-asset-value" id="walletPoints">-</span>
+                        </div>
+                        <div class="wallet-asset-row">
+                            <span class="wallet-asset-label">🎫 보유 티켓</span>
+                            <span class="wallet-asset-value" id="walletTickets">-</span>
+                        </div>
                     </div>
                 </div>
 

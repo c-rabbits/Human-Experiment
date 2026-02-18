@@ -3343,6 +3343,15 @@ body {
     margin-left: 2px;
 }
 
+/* 지갑 섹션 카드 내부: 보유 토큰/게임 재화는 설정 섹션과 동일 카드 안에 있으므로 내부 카드 스타일 제거 */
+.settings-section-card .wallet-token-card,
+.settings-section-card .wallet-asset-card {
+    background: transparent;
+    box-shadow: none;
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
 /* 재화 카드 */
 .wallet-asset-card {
     background: #fff;
