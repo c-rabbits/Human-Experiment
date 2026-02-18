@@ -1601,7 +1601,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* 상점 헤더: 타이틀 + 내 캐시(오른쪽) */
+/* 상점 헤더: 타이틀 + 재화정보(캐시·리워드포인트·티켓, 메인 상단과 동일) */
 .shop-header-row {
     display: flex;
     align-items: center;
@@ -1611,6 +1611,11 @@ body {
 }
 .shop-header-row .screen-title {
     margin-bottom: 0;
+}
+.shop-header-row .user-stats {
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 .shop-header-row .stat-item {
     flex-shrink: 0;

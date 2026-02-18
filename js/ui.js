@@ -688,9 +688,13 @@ function updateUserStats(data) {
     }
     if (data.rewardPoints !== undefined) {
         document.getElementById('rewardPoints').textContent = data.rewardPoints;
+        var shopRewardEl = document.getElementById('shopRewardPoints');
+        if (shopRewardEl) shopRewardEl.textContent = data.rewardPoints;
     }
     if (data.tickets !== undefined) {
         document.getElementById('ticketCount').textContent = data.tickets;
+        var shopTicketEl = document.getElementById('shopTicketCount');
+        if (shopTicketEl) shopTicketEl.textContent = data.tickets;
     }
 }
 
@@ -1259,6 +1263,12 @@ function switchScreen(screenName) {
         var cashEl = document.getElementById('cashCount');
         var shopCashEl = document.getElementById('shopCashCount');
         if (cashEl && shopCashEl) shopCashEl.textContent = cashEl.textContent;
+        var rewardEl = document.getElementById('rewardPoints');
+        var shopRewardEl = document.getElementById('shopRewardPoints');
+        if (rewardEl && shopRewardEl) shopRewardEl.textContent = rewardEl.textContent;
+        var ticketEl = document.getElementById('ticketCount');
+        var shopTicketEl = document.getElementById('shopTicketCount');
+        if (ticketEl && shopTicketEl) shopTicketEl.textContent = ticketEl.textContent;
     }
     applyLanguageToPage();
     if (screenName === 'settings') {
