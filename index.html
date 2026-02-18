@@ -424,6 +424,9 @@
                     <div class="nickname-popup-title">닉네임 만들기</div>
                     <p class="nickname-popup-desc">2자 이상 10자 이하, 중복 불가</p>
                     <input type="text" class="nickname-popup-input" id="nicknamePopupInput" maxlength="10" placeholder="닉네임 입력" autocomplete="off">
+                    <label class="nickname-popup-default-name">
+                        <input type="checkbox" id="nicknamePopupUseDefaultName"> 기본 이름 사용하기 (체크 시 닉네임과 관계없이 기본 이름이 노출됩니다)
+                    </label>
                     <div class="nickname-popup-error" id="nicknamePopupError" aria-live="polite"></div>
                     <div class="nickname-popup-buttons">
                         <button type="button" class="nickname-popup-btn nickname-popup-cancel" onclick="closeNicknamePopup()">취소</button>
@@ -542,6 +545,19 @@
                     <div class="game-start-buttons">
                         <button class="game-start-btn game-start-btn-cancel" onclick="closeShopPurchasePopup()">취소</button>
                         <button class="game-start-btn game-start-btn-confirm" onclick="confirmShopPurchase()">구매하기</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 구매 확인 팝업 (캐시/아이템/티켓 공통) -->
+            <div class="purchase-confirm-popup" id="purchaseConfirmPopup" onclick="event.stopPropagation()">
+                <div class="purchase-confirm-backdrop" onclick="closePurchaseConfirm()"></div>
+                <div class="purchase-confirm-content" onclick="event.stopPropagation()">
+                    <div class="purchase-confirm-title">구매 확인</div>
+                    <p class="purchase-confirm-message" id="purchaseConfirmMessage"></p>
+                    <div class="purchase-confirm-buttons">
+                        <button type="button" class="purchase-confirm-btn purchase-confirm-cancel" onclick="closePurchaseConfirm()">취소</button>
+                        <button type="button" class="purchase-confirm-btn purchase-confirm-ok" id="purchaseConfirmOkBtn">확인</button>
                     </div>
                 </div>
             </div>

@@ -605,40 +605,74 @@ function switchShopTab(tab) {
     }
 }
 
+// 구매 확인 팝업 (캐시/아이템/티켓 공통)
+var _purchaseConfirmCallback = null;
+
+function openPurchaseConfirm(message, onConfirm) {
+    var popup = document.getElementById('purchaseConfirmPopup');
+    var msgEl = document.getElementById('purchaseConfirmMessage');
+    var okBtn = document.getElementById('purchaseConfirmOkBtn');
+    if (!popup || !msgEl || !okBtn) return;
+    _purchaseConfirmCallback = typeof onConfirm === 'function' ? onConfirm : null;
+    msgEl.textContent = message || '구매하시겠습니까?';
+    okBtn.onclick = function () {
+        if (_purchaseConfirmCallback) _purchaseConfirmCallback();
+        closePurchaseConfirm();
+    };
+    popup.classList.add('active');
+}
+
+function closePurchaseConfirm() {
+    var popup = document.getElementById('purchaseConfirmPopup');
+    if (popup) popup.classList.remove('active');
+    _purchaseConfirmCallback = null;
+}
+
 function buyCash(amount, method) {
-    if (typeof showToast === 'function') {
-        showToast(method === 'line' ? 'LINE Pay 결제 기능은 준비 중입니다.' : '인앱 결제 기능은 준비 중입니다.');
-    } else {
-        alert(method === 'line' ? 'LINE Pay 결제 기능은 준비 중입니다.' : '인앱 결제 기능은 준비 중입니다.');
-    }
+    var methodLabel = method === 'line' ? 'LINE Pay' : '인앱 결제';
+    var priceMap = { 100: 300, 500: 1500, 1000: 3000, 2000: 6000, 5000: 15000 };
+    var price = priceMap[amount];
+    var priceLabel = price != null ? '¥' + price.toLocaleString() + '(' + methodLabel + ')' : methodLabel;
+    openPurchaseConfirm('캐시 ' + amount + '개를 ' + priceLabel + '로 구매하시겠습니까?', function () {
+        if (typeof showToast === 'function') {
+            showToast(method === 'line' ? 'LINE Pay 결제 기능은 준비 중입니다.' : '인앱 결제 기능은 준비 중입니다.');
+        } else {
+            alert(method === 'line' ? 'LINE Pay 결제 기능은 준비 중입니다.' : '인앱 결제 기능은 준비 중입니다.');
+        }
+    });
 }
 
 function buyItem(itemType, itemId, priceCash) {
-    var cashEl = document.getElementById('cashCount');
-    var currentCash = parseInt(cashEl ? cashEl.textContent : '0', 10) || 0;
-    if (currentCash < priceCash) {
-        if (typeof showToast === 'function') showToast('캐시가 부족합니다.');
-        else alert('캐시가 부족합니다.');
-        return;
-    }
-    updateUserStats({ cash: currentCash - priceCash });
-    if (typeof showToast === 'function') showToast('구매 완료! (보유 아이템 적용은 준비 중)');
-    else alert('구매 완료! (보유 아이템 적용은 준비 중)');
+    var typeLabel = itemType === 'profile_frame' ? '프로필 프레임' : itemType === 'nickname_effect' ? '닉네임 효과' : itemType === 'avatar_skin' ? '아바타 스킨' : itemType;
+    openPurchaseConfirm(typeLabel + ' [' + itemId + ']을(를) ' + priceCash + ' Cash로 구매하시겠습니까?', function () {
+        var cashEl = document.getElementById('cashCount');
+        var currentCash = parseInt(cashEl ? cashEl.textContent : '0', 10) || 0;
+        if (currentCash < priceCash) {
+            if (typeof showToast === 'function') showToast('캐시가 부족합니다.');
+            else alert('캐시가 부족합니다.');
+            return;
+        }
+        updateUserStats({ cash: currentCash - priceCash });
+        if (typeof showToast === 'function') showToast('구매 완료! (보유 아이템 적용은 준비 중)');
+        else alert('구매 완료! (보유 아이템 적용은 준비 중)');
+    });
 }
 
 function buyTicketsWithCash(amount, priceCash) {
-    var cashEl = document.getElementById('cashCount');
-    var ticketEl = document.getElementById('ticketCount');
-    var currentCash = parseInt(cashEl ? cashEl.textContent : '0', 10) || 0;
-    var currentTickets = parseInt(ticketEl ? ticketEl.textContent : '0', 10) || 0;
-    if (currentCash < priceCash) {
-        if (typeof showToast === 'function') showToast('캐시가 부족합니다.');
-        else alert('캐시가 부족합니다.');
-        return;
-    }
-    updateUserStats({ cash: currentCash - priceCash, tickets: currentTickets + amount });
-    if (typeof showToast === 'function') showToast('티켓 ' + amount + '개 구매 완료!');
-    else alert('티켓 ' + amount + '개 구매 완료!');
+    openPurchaseConfirm('티켓 ' + amount + '장을 ' + priceCash + ' Cash로 구매하시겠습니까?', function () {
+        var cashEl = document.getElementById('cashCount');
+        var ticketEl = document.getElementById('ticketCount');
+        var currentCash = parseInt(cashEl ? cashEl.textContent : '0', 10) || 0;
+        var currentTickets = parseInt(ticketEl ? ticketEl.textContent : '0', 10) || 0;
+        if (currentCash < priceCash) {
+            if (typeof showToast === 'function') showToast('캐시가 부족합니다.');
+            else alert('캐시가 부족합니다.');
+            return;
+        }
+        updateUserStats({ cash: currentCash - priceCash, tickets: currentTickets + amount });
+        if (typeof showToast === 'function') showToast('티켓 ' + amount + '개 구매 완료!');
+        else alert('티켓 ' + amount + '개 구매 완료!');
+    });
 }
 
 // ========================================
@@ -678,7 +712,8 @@ function updateWalletPage(data) {
             if (avatarWrap) avatarWrap.classList.add('no-image');
         }
     }
-    const displayLabel = data.nickname || data.displayName || data.characterName || '-';
+    var useDefault = getUseDefaultName();
+    var displayLabel = useDefault ? (data.displayName || data.characterName || '-') : (data.nickname || data.displayName || data.characterName || '-');
     if (walletName) walletName.textContent = displayLabel;
     const nicknameBtn = document.getElementById('walletNicknameBtn');
     if (nicknameBtn) nicknameBtn.textContent = data.nickname ? '닉네임 변경' : '닉네임 만들기';
@@ -799,6 +834,23 @@ function setNickname(name) {
     }
 }
 
+// 기본 이름 사용하기 (체크 시 닉네임과 관계없이 기본 이름 노출)
+function getUseDefaultName() {
+    try {
+        return localStorage.getItem('ph_use_default_name') === 'true';
+    } catch (e) {
+        return false;
+    }
+}
+function setUseDefaultName(use) {
+    try {
+        localStorage.setItem('ph_use_default_name', use ? 'true' : 'false');
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 // 닉네임 중복 확인 (실서버: GET /user/nickname/check?q=xxx)
 async function checkNicknameDuplicate(nickname) {
     // TODO: 실제 서버 API 연동
@@ -808,12 +860,14 @@ async function checkNicknameDuplicate(nickname) {
 }
 
 function openNicknamePopup() {
-    const popup = document.getElementById('nicknamePopup');
-    const input = document.getElementById('nicknamePopupInput');
-    const errEl = document.getElementById('nicknamePopupError');
+    var popup = document.getElementById('nicknamePopup');
+    var input = document.getElementById('nicknamePopupInput');
+    var errEl = document.getElementById('nicknamePopupError');
+    var useDefaultEl = document.getElementById('nicknamePopupUseDefaultName');
     if (!popup || !input) return;
-    errEl.textContent = '';
+    if (errEl) errEl.textContent = '';
     input.value = getNickname() || '';
+    if (useDefaultEl) useDefaultEl.checked = getUseDefaultName();
     input.focus();
     popup.classList.add('active');
 }
@@ -826,30 +880,35 @@ function closeNicknamePopup() {
 }
 
 async function confirmNickname() {
-    const input = document.getElementById('nicknamePopupInput');
-    const errEl = document.getElementById('nicknamePopupError');
+    var input = document.getElementById('nicknamePopupInput');
+    var errEl = document.getElementById('nicknamePopupError');
+    var useDefaultEl = document.getElementById('nicknamePopupUseDefaultName');
     if (!input || !errEl) return;
-    const raw = (input.value || '').trim();
-    if (raw.length < 2) {
-        errEl.textContent = '2자 이상 입력해주세요.';
-        return;
+    var raw = (input.value || '').trim();
+    var useDefault = useDefaultEl ? useDefaultEl.checked : false;
+    setUseDefaultName(useDefault);
+    if (raw.length >= 2 && raw.length <= 10) {
+        errEl.textContent = '확인 중...';
+        var isUsed = await checkNicknameDuplicate(raw);
+        if (isUsed) {
+            errEl.textContent = '이미 사용 중인 닉네임입니다.';
+            return;
+        }
+        setNickname(raw);
+        errEl.textContent = '';
+        closeNicknamePopup();
+        var userInfo = await API.getUserInfo();
+        if (userInfo) updateWalletPage(userInfo);
+        if (typeof showToast === 'function') showToast('닉네임이 저장되었습니다.');
+    } else if (raw.length > 0) {
+        errEl.textContent = raw.length < 2 ? '2자 이상 입력해주세요.' : '10자 이하로 입력해주세요.';
+    } else {
+        errEl.textContent = '';
+        closeNicknamePopup();
+        var userInfo = await API.getUserInfo();
+        if (userInfo) updateWalletPage(userInfo);
+        if (typeof showToast === 'function') showToast('기본 이름 사용 설정이 저장되었습니다.');
     }
-    if (raw.length > 10) {
-        errEl.textContent = '10자 이하로 입력해주세요.';
-        return;
-    }
-    errEl.textContent = '확인 중...';
-    const isUsed = await checkNicknameDuplicate(raw);
-    if (isUsed) {
-        errEl.textContent = '이미 사용 중인 닉네임입니다.';
-        return;
-    }
-    setNickname(raw);
-    errEl.textContent = '';
-    closeNicknamePopup();
-    const userInfo = await API.getUserInfo();
-    if (userInfo) updateWalletPage(userInfo);
-    if (typeof showToast === 'function') showToast('닉네임이 저장되었습니다.');
 }
 
 // 토큰 클레임

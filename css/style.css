@@ -2419,6 +2419,72 @@ body {
     background: #e5e5e5;
 }
 
+/* 구매 확인 팝업 (캐시/아이템/티켓) */
+.purchase-confirm-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    padding: 20px;
+}
+.purchase-confirm-popup.active {
+    display: flex;
+}
+.purchase-confirm-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.purchase-confirm-content {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 320px;
+    width: 100%;
+}
+.purchase-confirm-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 12px;
+}
+.purchase-confirm-message {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    margin: 0 0 20px;
+}
+.purchase-confirm-buttons {
+    display: flex;
+    gap: 8px;
+}
+.purchase-confirm-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+.purchase-confirm-cancel {
+    background: #f0f0f0;
+    color: #333;
+}
+.purchase-confirm-ok {
+    background: #000;
+    color: #fff;
+}
+
 /* 닉네임 만들기 팝업 */
 .nickname-popup {
     position: fixed;
@@ -2474,6 +2540,19 @@ body {
 .nickname-popup-input:focus {
     outline: none;
     border-color: #06C755;
+}
+.nickname-popup-default-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+.nickname-popup-default-name input {
+    width: auto;
+    flex-shrink: 0;
 }
 .nickname-popup-error {
     font-size: 13px;
