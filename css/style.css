@@ -3338,6 +3338,8 @@ body {
     width: 14px;
     height: 14px;
     display: block;
+    filter: brightness(0) saturate(100%);
+    opacity: 0.55;
 }
 
 /* 섹션 타이틀 */
