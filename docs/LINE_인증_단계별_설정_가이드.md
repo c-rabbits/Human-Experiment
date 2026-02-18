@@ -160,12 +160,12 @@ https://iqkkbulxmjpjrbyuyjqp.supabase.co/functions/v1/line-auth
 
 ## 체크리스트 (코드 못 보는 사람용)
 
-- [ ] **1단계**: Supabase **Project Settings** → **API** → **JWT Settings**에서 **JWT Secret** 복사
-- [ ] **2단계**: **Edge Functions**에서 `line-auth` 함수 생성/배포 (에디터에 코드 붙여 넣기 또는 CLI 배포)
-- [ ] **3단계**: **Edge Functions** → **Secrets**에서 Name `JWT_SECRET`, Value에 복사한 JWT Secret 저장
-- [ ] **4단계**: **line-auth**의 **Function URL** 복사해 개발자에게 전달 또는 기록
-- [ ] **5단계**: 개발자에게 “LIFF 로그인 직후 line-auth 호출 → setSupabaseSession 호출” 요청 (위 5단계 문장 전달)
-- [ ] **6단계**(선택): LINE Developers에서 LIFF **Endpoint URL**이 앱 주소와 같은지 확인
+- [v] **1단계**: Supabase **Project Settings** → **API** → **JWT Settings**에서 **JWT Secret** 복사
+- [v] **2단계**: **Edge Functions**에서 `line-auth` 함수 생성/배포 (에디터에 코드 붙여 넣기 또는 CLI 배포)
+- [v] **3단계**: **Edge Functions** → **Secrets**에서 Name `JWT_SECRET`, Value에 복사한 JWT Secret 저장
+- [v] **4단계**: **line-auth**의 **Function URL** 복사해 개발자에게 전달 또는 기록
+- [v] **5단계**: 개발자에게 “LIFF 로그인 직후 line-auth 호출 → setSupabaseSession 호출” 요청 (위 5단계 문장 전달)
+- [v] **6단계**(선택): LINE Developers에서 LIFF **Endpoint URL**이 앱 주소와 같은지 확인
 
 ---
 
