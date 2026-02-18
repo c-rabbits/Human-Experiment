@@ -1602,20 +1602,8 @@ body {
 .shop-header-row .screen-title {
     margin-bottom: 0;
 }
-.shop-my-cash {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #000;
+.shop-header-row .stat-item {
     flex-shrink: 0;
-}
-.shop-my-cash-icon {
-    font-size: 20px;
-}
-.shop-my-cash-value {
-    font-variant-numeric: tabular-nums;
 }
 
 .placeholder-content {
