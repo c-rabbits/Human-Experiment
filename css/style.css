@@ -3102,8 +3102,10 @@ body {
 
 .wallet-profile-info {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     min-width: 0;
     flex: 1;
 }
@@ -3112,12 +3114,17 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    min-width: 0;
+    flex: 1;
 }
 .wallet-profile-name {
     font-size: 18px;
     font-weight: 700;
     color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .wallet-nickname-btn {
     padding: 6px 12px;
@@ -3129,6 +3136,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
+    flex-shrink: 0;
 }
 .wallet-nickname-btn:hover {
     background: rgba(6, 199, 85, 0.2);
@@ -3137,6 +3145,8 @@ body {
 .wallet-profile-badge {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 .wallet-line-badge {
