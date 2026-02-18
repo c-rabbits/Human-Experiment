@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인간실험 관리자 – 이벤트 관리</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- 로그인 화면 (비밀번호 입력) -->
+    <div class="admin-login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1 class="login-title">인간실험 관리자</h1>
+            <p class="login-desc">이벤트 생성·수정·삭제를 위해 로그인하세요.</p>
+            <form class="login-form" id="loginForm" onsubmit="return handleLogin(event)">
+                <input type="password" id="adminPassword" class="login-input" placeholder="관리자 비밀번호" autocomplete="current-password" required>
+                <button type="submit" class="login-btn">로그인</button>
+            </form>
+            <p class="login-hint" id="loginHint"></p>
+        </div>
+    </div>
+
+    <!-- 메인 관리자 영역 (로그인 후 표시) -->
+    <div class="admin-main hidden" id="adminMain">
+        <header class="admin-header">
+            <h1 class="admin-header-title">인간실험 관리자</h1>
+            <div class="admin-header-actions">
+                <span class="admin-user" id="adminUserLabel">관리자</span>
+                <button type="button" class="btn btn-outline" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </header>
+
+        <nav class="admin-nav">
+            <button type="button" class="admin-nav-item active" data-panel="list" onclick="switchPanel('list')">이벤트 목록</button>
+            <button type="button" class="admin-nav-item" data-panel="form" onclick="switchPanel('form')">이벤트 추가</button>
+        </nav>
+
+        <main class="admin-content">
+            <!-- 이벤트 목록 패널 -->
+            <section class="admin-panel active" id="panelList" data-panel="list">
+                <div class="panel-toolbar">
+                    <div class="filters">
+                        <label>상태</label>
+                        <select id="filterStatus" onchange="refreshEventList()">
+                            <option value="">전체</option>
+                            <option value="draft">초안</option>
+                            <option value="scheduled">예정</option>
+                            <option value="live">진행 중</option>
+                            <option value="ended">종료</option>
+                            <option value="cancelled">취소</option>
+                        </select>
+                        <label>시나리오</label>
+                        <input type="text" id="filterScenario" class="filter-input" placeholder="시나리오 ID로 검색" oninput="refreshEventList()">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="switchPanel('form'); setFormMode('add');">+ 이벤트 추가</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>이벤트명</th>
+                                <th>시나리오</th>
+                                <th>시작 일시</th>
+                                <th>종료 일시</th>
+                                <th>리워드(USDT)</th>
+                                <th>상태</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventListBody">
+                            <!-- JS로 채움 -->
+                        </tbody>
+                    </table>
+                </div>
+                <p class="list-empty hidden" id="listEmpty">등록된 이벤트가 없습니다.</p>
+            </section>
+
+            <!-- 이벤트 추가/수정 패널 -->
+            <section class="admin-panel" id="panelForm" data-panel="form">
+                <h2 class="panel-title" id="formPanelTitle">이벤트 추가</h2>
+                <form class="event-form" id="eventForm" onsubmit="return saveEvent(event)">
+                    <input type="hidden" id="eventId" value="">
+                    <div class="form-row">
+                        <label for="eventTitle">이벤트명 *</label>
+                        <input type="text" id="eventTitle" placeholder="이벤트 제목을 입력하세요" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventScenarioId">시나리오 *</label>
+                        <input type="text" id="eventScenarioId" placeholder="시나리오 ID를 입력하세요" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventStartAt">시작 일시 *</label>
+                        <input type="datetime-local" id="eventStartAt" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventEndAt">종료 일시 *</label>
+                        <input type="datetime-local" id="eventEndAt" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventRewardUsdt">리워드 (USDT) *</label>
+                        <input type="number" id="eventRewardUsdt" min="0" step="1" value="50" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventPlayTimeMinutes">플레이 제한시간 (분) *</label>
+                        <input type="number" id="eventPlayTimeMinutes" min="1" max="120" value="10" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventRequiredTickets">필요 티켓 *</label>
+                        <input type="number" id="eventRequiredTickets" min="0" value="1" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventQuestionCount">문제 수 *</label>
+                        <input type="number" id="eventQuestionCount" min="1" max="20" value="10" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="eventStatus">상태</label>
+                        <select id="eventStatus">
+                            <option value="draft">초안</option>
+                            <option value="scheduled">예정</option>
+                            <option value="live">진행 중</option>
+                            <option value="ended">종료</option>
+                            <option value="cancelled">취소</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="formSubmitBtn">저장</button>
+                        <button type="button" class="btn btn-outline" onclick="switchPanel('list')">취소</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- 삭제 확인 모달 -->
+    <div class="modal hidden" id="deleteModal">
+        <div class="modal-backdrop" onclick="closeDeleteModal()"></div>
+        <div class="modal-content">
+            <h3>이벤트 삭제</h3>
+            <p id="deleteModalMessage">이 이벤트를 삭제하시겠습니까?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-danger" id="deleteConfirmBtn">삭제</button>
+                <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
