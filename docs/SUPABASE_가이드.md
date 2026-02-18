@@ -224,7 +224,7 @@ async someMethod() {
 - [v] `001_initial_schema.sql` 실행
 - [ ] (선택) Edge Function `line-auth` 배포 및 LIFF 토큰 → JWT 교환 연동
 - [v] `config.js`에 URL/anon key 설정
-- [ ] `supabase-client.js` 로드 후 `api.js`에서 Supabase 호출 분기
+- [v] `supabase-client.js` 로드 후 `api.js`에서 Supabase 호출 분기
 - [ ] 프로필/이벤트/게임 시작·답안·종료 흐름 테스트
 - [ ] 관리자 기능은 필요 시 별도 API로 이전
 

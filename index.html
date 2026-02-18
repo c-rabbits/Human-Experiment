@@ -1721,13 +1721,17 @@
         </div>
     </div>
 
-    <!-- JavaScript 모듈 (의존성 순서). Supabase 사용 시 config.js에 USE_SUPABASE: true, URL, anon key 설정 -->
+    <!-- JavaScript: 반드시 아래 순서 유지 (api.js가 CONFIG·supabase·getSupabase 등 참조) -->
+    <!-- 1. config.js → CONFIG, CONFIG.USE_SUPABASE 사용 가능 -->
     <script src="js/config.js"></script>
+    <!-- 2. @supabase/supabase-js (CDN) → window.supabase 사용 가능 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 3. supabase-client.js → getSupabase(), getSupabaseUserId() 사용 가능 -->
     <script src="js/supabase-client.js"></script>
     <script src="js/data.js"></script>
     <script src="js/liff-auth.js"></script>
     <script src="js/kaia-wallet.js"></script>
+    <!-- 4. api.js → 위 전역 함수/객체 참조 -->
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/ad-reward.js"></script>

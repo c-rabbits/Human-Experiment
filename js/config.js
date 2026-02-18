@@ -6,6 +6,7 @@
 
 const CONFIG = {
     // Supabase 사용 여부 (true 시 api.js에서 Supabase 호출 사용)
+    // USE_SUPABASE는 앱(유저) 전용. 관리자 화면에는 Supabase 키를 두지 말고, 추후 관리자 API(서버에서 service_role)에서만 사용.
     USE_SUPABASE: true,
 
     // Supabase Project URL (예: https://xxxxx.supabase.co)
