@@ -118,6 +118,12 @@ function handlePointerEnd(e) {
     const distance = Math.abs(diff);
 
     if (distance >= SWIPE_THRESHOLD) {
+        // 클론 위치에서 한 번 더 스와이프하면 인덱스가 범위를 벗어나 흰 화면이 나오므로, 먼저 동기 점프로 실제 슬라이드로 보정
+        var atLeftClone = (bannerVisualIndex === 0);
+        var atRightClone = (bannerVisualIndex === bannerCount + 1);
+        if (atLeftClone || atRightClone) {
+            doBannerCloneJumpSync(atLeftClone);
+        }
         if (diff > 0) {
             currentBannerIndex = (currentBannerIndex + 1) % bannerCount;
             bannerVisualIndex += 1;
@@ -192,7 +198,34 @@ function updateBannerPosition() {
     });
 }
 
-/** 클론 슬라이드에서 실제 슬라이드로 순간 점프 (무한 루프 유지) */
+/** 클론 슬라이드에서 실제 슬라이드로 순간 점프 (동기, 빠른 스와이프 시 인덱스 보정용) */
+function doBannerCloneJumpSync(atLeftClone) {
+    const track = document.getElementById('bannerTrack');
+    if (!track) return;
+    if (bannerCloneJumpTimeout) {
+        clearTimeout(bannerCloneJumpTimeout);
+        bannerCloneJumpTimeout = null;
+    }
+    track.style.transition = 'none';
+    if (atLeftClone) {
+        bannerVisualIndex = bannerCount;
+        currentBannerIndex = bannerCount - 1;
+    } else {
+        bannerVisualIndex = 1;
+        currentBannerIndex = 0;
+    }
+    track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
+    void track.offsetHeight; // reflow
+    track.style.transition = '';
+    repaintBannerVisibleSlide();
+    const dots = document.querySelectorAll('.banner-dot');
+    dots.forEach(function (dot, index) {
+        if (index === currentBannerIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+    });
+}
+
+/** 클론 슬라이드에서 실제 슬라이드로 순간 점프 (무한 루프 유지, transitionend/타이머에서 호출) */
 function doBannerCloneJump(atLeftClone) {
     const track = document.getElementById('bannerTrack');
     if (!track) return;
@@ -210,15 +243,15 @@ function doBannerCloneJump(atLeftClone) {
     track.style.transform = `translateX(-${bannerVisualIndex * 100}%)`;
     // 이중 rAF: 첫 프레임에서 transition 제거 후, 두 번째 프레임에서 transition 복원
     // 이렇게 해야 모바일에서 깜빡임 없이 안정적으로 점프
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
             track.style.transition = '';
             repaintBannerVisibleSlide();
         });
     });
 
     const dots = document.querySelectorAll('.banner-dot');
-    dots.forEach((dot, index) => {
+    dots.forEach(function (dot, index) {
         if (index === currentBannerIndex) dot.classList.add('active');
         else dot.classList.remove('active');
     });
@@ -248,17 +281,32 @@ function repaintBannerVisibleSlide() {
 function handleBannerTransitionEnd(e) {
     if (e && e.propertyName && e.propertyName !== 'transform') return;
     if (e && e.target && e.target.id !== 'bannerTrack') return; // 자식 요소 전파 무시
-    const track = document.getElementById('bannerTrack');
+    var track = document.getElementById('bannerTrack');
     if (!track) return;
-
-    const atLeftClone = (bannerVisualIndex === 0);
-    const atRightClone = (bannerVisualIndex === bannerCount + 1);
+    // 빠른 스와이프로 인덱스가 범위를 벗어난 경우(흰 화면) 보정: 클론으로만 점프
+    var atLeftClone = (bannerVisualIndex === 0);
+    var atRightClone = (bannerVisualIndex === bannerCount + 1);
+    if (!atLeftClone && !atRightClone && (bannerVisualIndex < 0 || bannerVisualIndex > bannerCount + 1)) {
+        if (bannerVisualIndex < 0) {
+            bannerVisualIndex = bannerCount;
+            currentBannerIndex = bannerCount - 1;
+        } else {
+            bannerVisualIndex = 1;
+            currentBannerIndex = 0;
+        }
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-' + (bannerVisualIndex * 100) + '%)';
+        void track.offsetHeight;
+        track.style.transition = '';
+        repaintBannerVisibleSlide();
+        return;
+    }
     if (atLeftClone || atRightClone) {
         if (bannerCloneJumpTimeout) {
             clearTimeout(bannerCloneJumpTimeout);
             bannerCloneJumpTimeout = null;
         }
-        requestAnimationFrame(() => doBannerCloneJump(atLeftClone));
+        requestAnimationFrame(function () { doBannerCloneJump(atLeftClone); });
     } else {
         // 클론이 아닐 때도 보이는 슬라이드 repaint (모바일 반복 스와이프 시 이미지 유지)
         repaintBannerVisibleSlide();
