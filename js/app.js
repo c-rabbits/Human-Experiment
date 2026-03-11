@@ -19,6 +19,10 @@ let attemptCount = 0; // 도전 횟수 추적
 async function initApp() {
     console.log('앱 초기화 시작...');
 
+    // 시나리오 목록 로드 (Supabase events 또는 data.js 목업)
+    const scenarioList = await API.getScenarios();
+    if (scenarioList) window.__scenarios = scenarioList;
+
     // 유저 정보 로드
     const userInfo = await API.getUserInfo();
     console.log('유저 정보:', userInfo);

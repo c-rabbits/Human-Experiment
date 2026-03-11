@@ -61,8 +61,12 @@ async function confirmGameStart() {
         return;
     }
 
-    // 티켓 차감
-    updateUserStats({ tickets: currentTickets - 1 });
+    // 티켓 반영 (서버에서 차감했으면 result.ticketsLeft, 아니면 로컬 차감)
+    if (typeof result.ticketsLeft === 'number') {
+        updateUserStats({ tickets: result.ticketsLeft });
+    } else {
+        updateUserStats({ tickets: currentTickets - 1 });
+    }
 
     currentGameId = result.gameId;
 
@@ -70,7 +74,8 @@ async function confirmGameStart() {
     console.log('scenarios 객체:', scenarios);
     console.log('scenarios[scenarioId]:', scenarios[scenarioId]);
 
-    currentScenario = scenarios[scenarioId];
+    var scenarioSource = (typeof window !== 'undefined' && window.__scenarios) ? window.__scenarios : scenarios;
+    currentScenario = scenarioSource[scenarioId];
     currentScenarioId = scenarioId;
 
     if (!currentScenario) {

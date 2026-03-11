@@ -74,10 +74,36 @@ const API = {
     // 시나리오 목록 가져오기
     async getScenarios() {
         try {
-            // const response = await fetch(`${this.baseURL}/scenarios`);
-            // return await response.json();
-
-            // 임시 데이터는 하단 scenarios 객체 사용
+            if (useSupabase()) {
+                const sb = getSupabase();
+                if (sb) {
+                    const { data: eventsList, error: eventsErr } = await sb.from('events').select('id, scenario_id, title, banner_image_url').in('status', ['live', 'scheduled']);
+                    if (!eventsErr && eventsList && eventsList.length > 0) {
+                        const out = {};
+                        for (const ev of eventsList) {
+                            const { data: qList } = await sb.from('event_questions').select('text, choices, correct_index, sort_order').eq('event_id', ev.id).order('sort_order', { ascending: true });
+                            const questions = (qList || []).map((q) => ({
+                                q: q.text || '',
+                                options: Array.isArray(q.choices) ? q.choices : [],
+                                correct: q.correct_index != null ? q.correct_index : 0
+                            }));
+                            out[ev.scenario_id] = {
+                                name: ev.title || ev.scenario_id,
+                                emoji: '',
+                                bannerImage: ev.banner_image_url || '',
+                                contextTitle: '',
+                                contextSubtitle: '',
+                                questions: questions
+                            };
+                        }
+                        if (Object.keys(out).length > 0) {
+                            console.log('[API] getScenarios: Supabase events에서 로드');
+                            return out;
+                        }
+                    }
+                    if (eventsErr) console.error('[API] getScenarios Supabase error', eventsErr);
+                }
+            }
             return scenarios;
         } catch (error) {
             console.error('시나리오 로드 실패:', error);
@@ -88,20 +114,34 @@ const API = {
     // 게임 시작 (티켓 차감)
     async startGame(scenarioId) {
         try {
-            // const response = await fetch(`${this.baseURL}/game/start`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Authorization': `Bearer ${getLIFFToken()}`,
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ scenarioId })
-            // });
-            // return await response.json();
-
-            // 임시: 티켓 차감
-            const currentTickets = parseInt(document.getElementById('ticketCount').textContent);
+            if (useSupabase()) {
+                const sb = getSupabase();
+                const lineUserId = (liffProfile && liffProfile.userId) || (typeof getSupabaseUserId === 'function' ? await getSupabaseUserId() : null);
+                if (sb && lineUserId) {
+                    const { data: ev, error: evErr } = await sb.from('events').select('id, required_tickets').eq('scenario_id', scenarioId).in('status', ['live', 'scheduled']).maybeSingle();
+                    if (!evErr && ev) {
+                        const ticketsNeeded = ev.required_tickets != null ? ev.required_tickets : 1;
+                        const { data: profile } = await sb.from('profiles').select('tickets').eq('line_user_id', lineUserId).maybeSingle();
+                        const hasTickets = profile && (profile.tickets != null ? profile.tickets : 0) >= ticketsNeeded;
+                        if (!hasTickets) {
+                            return { success: false, message: '티켓이 부족합니다' };
+                        }
+                        const { data: game, error: gameErr } = await sb.from('games').insert({ event_id: ev.id, line_user_id: lineUserId, status: 'playing' }).select('id').single();
+                        if (!gameErr && game) {
+                            const newTickets = (profile.tickets || 0) - ticketsNeeded;
+                            const { error: upErr } = await sb.from('profiles').update({ tickets: newTickets }).eq('line_user_id', lineUserId);
+                            if (!upErr) {
+                                console.log('[API] startGame: Supabase games 생성');
+                                return { success: true, gameId: game.id, ticketsLeft: newTickets };
+                            }
+                        }
+                        if (gameErr) console.error('[API] startGame Supabase error', gameErr);
+                    }
+                }
+            }
+            const currentTickets = parseInt(document.getElementById('ticketCount').textContent, 10) || 0;
             if (currentTickets > 0) {
-                updateUserStats({ tickets: currentTickets - 1 });
+                if (typeof updateUserStats === 'function') updateUserStats({ tickets: currentTickets - 1 });
                 return { success: true, gameId: 'game_' + Date.now() };
             }
             return { success: false, message: '티켓이 부족합니다' };
@@ -111,20 +151,21 @@ const API = {
         }
     },
 
-    // 답변 제출
+    // 답변 제출 (questionId = 문제 인덱스 0-based, answer = 선택한 옵션 인덱스 0~3)
     async submitAnswer(gameId, questionId, answer) {
         try {
-            // const response = await fetch(`${this.baseURL}/game/answer`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Authorization': `Bearer ${getLIFFToken()}`,
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ gameId, questionId, answer })
-            // });
-            // return await response.json();
-
-            // 임시: 로컬 처리
+            if (useSupabase() && gameId && typeof questionId === 'number' && typeof answer === 'number') {
+                const sb = getSupabase();
+                if (sb) {
+                    const { error } = await sb.from('game_answers').insert({
+                        game_id: gameId,
+                        question_index: questionId,
+                        selected_index: answer
+                    });
+                    if (!error) return { success: true };
+                    console.error('[API] submitAnswer Supabase error', error);
+                }
+            }
             return { success: true };
         } catch (error) {
             console.error('답변 제출 실패:', error);
@@ -135,30 +176,71 @@ const API = {
     // 게임 완료 및 결과 받기
     async completeGame(gameId, answers) {
         try {
-            // const response = await fetch(`${this.baseURL}/game/complete`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Authorization': `Bearer ${getLIFFToken()}`,
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ gameId, answers })
-            // });
-            // return await response.json();
+            if (useSupabase() && gameId) {
+                const sb = getSupabase();
+                if (sb) {
+                    const { data: game, error: gameErr } = await sb.from('games').select('id, event_id').eq('id', gameId).maybeSingle();
+                    if (!gameErr && game) {
+                        await sb.from('games').update({ status: 'completed', completed_at: new Date().toISOString() }).eq('id', gameId);
 
-            // 임시: 로컬 계산
+                        const { data: qList } = await sb.from('event_questions').select('id, text, choices, correct_index, sort_order').eq('event_id', game.event_id).order('sort_order', { ascending: true });
+                        const { data: ansList } = await sb.from('game_answers').select('question_index, selected_index').eq('game_id', gameId).order('question_index', { ascending: true });
+
+                        const totalQuestions = (qList || []).length;
+                        const ansMap = {};
+                        (ansList || []).forEach((a) => { ansMap[a.question_index] = a.selected_index; });
+                        let correctCount = 0;
+                        const questionResults = (qList || []).map((q, idx) => {
+                            const userSel = ansMap[idx];
+                            const correct = q.correct_index != null ? q.correct_index : 0;
+                            const isCorrect = userSel === correct;
+                            if (isCorrect) correctCount++;
+                            const opts = Array.isArray(q.choices) ? q.choices : [];
+                            return {
+                                questionNumber: idx + 1,
+                                question: q.text || '',
+                                userAnswer: opts[userSel],
+                                correctAnswer: opts[correct],
+                                isCorrect: isCorrect,
+                                userPercentage: 50,
+                                correctPercentage: 50
+                            };
+                        });
+
+                        const { data: ev } = await sb.from('events').select('end_at').eq('id', game.event_id).single();
+                        const eventEnded = ev && new Date(ev.end_at) <= new Date();
+                        const status = eventEnded ? 'complete' : 'pending';
+
+                        console.log('[API] completeGame: Supabase 반영, correctCount=', correctCount);
+                        return {
+                            status: status,
+                            correctCount: correctCount,
+                            totalQuestions: totalQuestions,
+                            totalParticipants: 0,
+                            eventTimeLeft: 0,
+                            isWinner: false,
+                            earnedCash: 0,
+                            earnedPoints: 0,
+                            rewardAmount: 0,
+                            totalWinners: 0,
+                            questionResults: questionResults
+                        };
+                    }
+                }
+            }
+            const tot = (typeof currentScenario !== 'undefined' && currentScenario && currentScenario.questions) ? currentScenario.questions.length : 0;
             return {
-                status: 'pending', // 'pending' | 'complete'
-                correctCount: correctCount,
-                totalQuestions: currentScenario.questions.length,
+                status: 'pending',
+                correctCount: typeof correctCount !== 'undefined' ? correctCount : 0,
+                totalQuestions: tot,
                 totalParticipants: 128492,
-                eventTimeLeft: 6138, // 초 단위
-                // 이벤트 종료 후 추가 데이터
+                eventTimeLeft: 6138,
                 isWinner: false,
                 earnedCash: 0,
                 earnedPoints: 0,
                 rewardAmount: 0,
                 totalWinners: 0,
-                questionResults: [] // 문제별 상세 결과
+                questionResults: []
             };
         } catch (error) {
             console.error('게임 완료 처리 실패:', error);
@@ -192,47 +274,84 @@ const API = {
     // 이벤트 종료 후 결과 조회
     async getEventResult(gameId) {
         try {
-            // const response = await fetch(`${this.baseURL}/game/result/${gameId}`, {
-            //     headers: { 'Authorization': `Bearer ${getLIFFToken()}` }
-            // });
-            // return await response.json();
+            if (useSupabase() && gameId) {
+                const sb = getSupabase();
+                if (sb) {
+                    const { data: game, error: gameErr } = await sb.from('games').select('id, event_id, line_user_id').eq('id', gameId).maybeSingle();
+                    if (!gameErr && game) {
+                        const { data: ev } = await sb.from('events').select('reward_usdt').eq('id', game.event_id).single();
+                        const { data: qList } = await sb.from('event_questions').select('id, text, choices, correct_index, sort_order').eq('event_id', game.event_id).order('sort_order', { ascending: true });
+                        const { data: ansList } = await sb.from('game_answers').select('question_index, selected_index').eq('game_id', gameId).order('question_index', { ascending: true });
 
-            // 임시: 승자 데이터
+                        const totalQuestions = (qList || []).length;
+                        const ansMap = {};
+                        (ansList || []).forEach((a) => { ansMap[a.question_index] = a.selected_index; });
+                        let correctCount = 0;
+                        const questionResults = (qList || []).map((q, idx) => {
+                            const userSel = ansMap[idx];
+                            const correct = q.correct_index != null ? q.correct_index : 0;
+                            const isCorrect = userSel === correct;
+                            if (isCorrect) correctCount++;
+                            const opts = Array.isArray(q.choices) ? q.choices : [];
+                            return {
+                                questionNumber: idx + 1,
+                                question: q.text || '',
+                                userAnswer: opts[userSel],
+                                correctAnswer: opts[correct],
+                                isCorrect: isCorrect,
+                                userPercentage: 50,
+                                correctPercentage: 50
+                            };
+                        });
+
+                        const rewardAmount = (ev && ev.reward_usdt != null) ? Number(ev.reward_usdt) : 0;
+                        const mockWinners = [
+                            { profileImageUrl: (liffProfile && liffProfile.pictureUrl) || '', nickname: '1등' },
+                            { profileImageUrl: '', nickname: '2등' },
+                            { profileImageUrl: '', nickname: '3등' }
+                        ];
+
+                        console.log('[API] getEventResult: Supabase에서 로드');
+                        return {
+                            status: 'complete',
+                            isWinner: false,
+                            correctCount: correctCount,
+                            totalQuestions: totalQuestions,
+                            rewardAmount: rewardAmount,
+                            totalWinners: 0,
+                            winners: mockWinners,
+                            topPercentile: 50,
+                            questionResults: questionResults
+                        };
+                    }
+                }
+            }
             const isWinner = Math.random() > 0.5;
-
-            // 임시: 최종 승자 리스트 목업 (실서버에서는 /game/result 응답에 winners 포함)
             const mockWinners = [
-                { profileImageUrl: liffProfile && liffProfile.pictureUrl ? liffProfile.pictureUrl : '', nickname: 'HE1등' },
+                { profileImageUrl: (typeof liffProfile !== 'undefined' && liffProfile && liffProfile.pictureUrl) ? liffProfile.pictureUrl : '', nickname: 'HE1등' },
                 { profileImageUrl: '', nickname: '트렌드마스터' },
-                { profileImageUrl: '', nickname: '선택왕' },
-                { profileImageUrl: '', nickname: '인간독해기' },
-                { profileImageUrl: '', nickname: '맞춤왕' }
+                { profileImageUrl: '', nickname: '선택왕' }
             ];
-
+            const q = (typeof currentScenario !== 'undefined' && currentScenario && currentScenario.questions) ? currentScenario.questions : [];
+            const ua = typeof userAnswers !== 'undefined' ? userAnswers : [];
             return {
                 status: 'complete',
                 isWinner: isWinner,
                 correctCount: isWinner ? 10 : 7,
-                totalQuestions: 10,
+                totalQuestions: q.length,
                 rewardAmount: isWinner ? 32.4 : 0,
                 totalWinners: 124,
                 winners: mockWinners,
                 topPercentile: 38,
-                questionResults: currentScenario.questions.map((q, idx) => {
-                    const userAnswer = userAnswers[idx];
-                    const correctAnswer = q.correct;
-                    const isCorrect = userAnswer === correctAnswer;
-
-                    return {
-                        questionNumber: idx + 1,
-                        question: q.q,
-                        userAnswer: q.options[userAnswer],
-                        correctAnswer: q.options[correctAnswer],
-                        isCorrect: isCorrect,
-                        userPercentage: Math.floor(Math.random() * 30) + 20,
-                        correctPercentage: Math.floor(Math.random() * 30) + 40
-                    };
-                })
+                questionResults: q.map((qu, idx) => ({
+                    questionNumber: idx + 1,
+                    question: qu.q,
+                    userAnswer: qu.options[ua[idx]],
+                    correctAnswer: qu.options[qu.correct],
+                    isCorrect: ua[idx] === qu.correct,
+                    userPercentage: Math.floor(Math.random() * 30) + 20,
+                    correctPercentage: Math.floor(Math.random() * 30) + 40
+                }))
             };
         } catch (error) {
             console.error('결과 조회 실패:', error);
